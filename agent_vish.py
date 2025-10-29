@@ -16,9 +16,7 @@ class AgenticAIBot:
             if result is not None:
                 return result
         return f"{self.name} could not understand your request."
-
 # Sample skills
-
 def greet_skill(message, memory):
     if "hello" in message.lower():
         return "Hello! How can I assist you today?"
@@ -34,24 +32,21 @@ def about_me_skill(message, memory):
     Uses structured data from resume including summary, work experience, 
     education, skills, and achievements. Responds contextually based on keywords.
     """
-    
     # Structured Q&A data extracted from Vishal Anand's resume
     qa_pairs = {
-        "challenges as a team lead": "As a team lead, I've navigated several key challenges. One major aspect is balancing technical delivery with people management - ensuring the team stays productive while fostering their growth. I've handled situations where team members had conflicting priorities, and I addressed this by implementing clear communication channels and regular one-on-ones. Another challenge was managing cross-functional dependencies, which I resolved by establishing transparent roadmaps and proactive stakeholder updates.
-        ",
+        "challenges as a team lead": "As a team lead, I've navigated several key challenges. One major aspect is balancing technical delivery with people management - ensuring the team stays productive while fostering their growth. I've handled situations where team members had conflicting priorities, and I addressed this by implementing clear communication channels and regular one-on-ones. Another challenge was managing cross-functional dependencies, which I resolved by establishing transparent roadmaps and proactive stakeholder updates.",
         "handling escalations": "My approach to handling escalations is methodical and customer-focused. First, I quickly assess the severity and business impact. Then, I gather all relevant information from both technical and business perspectives. I believe in transparent communication - keeping stakeholders informed while the team works on resolution. I've successfully de-escalated critical production issues by setting realistic expectations, providing regular updates, and ensuring we have a root cause analysis and prevention plan in place afterwards.",
         "leadership approach": "My leadership approach centers on empowerment and clarity. I believe in setting clear goals and then trusting my team to execute while providing support when needed. I focus on removing blockers and creating an environment where people feel safe to innovate and take calculated risks. I practice servant leadership - my role is to enable the team's success. Regular feedback, both giving and receiving, is crucial. I also believe in leading by example, whether it's code quality, communication standards, or work ethic.",
         "upsell cross-sell strategy": "My upsell and cross-sell strategy is built on deep customer understanding and value delivery. First, I ensure we're delivering exceptional value on the current engagement - satisfied customers are receptive to expansion. I analyze usage patterns and customer goals to identify natural expansion opportunities. Then, I focus on consultative conversations rather than sales pitches - understanding their evolving needs and demonstrating how additional solutions solve real problems. Timing is crucial, so I look for trigger events like successful project completions, business growth, or new initiatives. I also leverage customer success metrics to build business cases that show clear ROI."
     }
-    
+
     # Check incoming message against Q&A patterns
     message_lower = message.lower()
     for question_pattern, answer in qa_pairs.items():
         if question_pattern in message_lower:
             return answer
-    
+
     # Continue with existing logic if no pattern matches
-    # (existing logic would continue here)
     return None
 
 
@@ -61,82 +56,7 @@ def insight_skill(message, memory):
     based on business growth, retention, leadership, career development, and performance analytics.
     Draws from real data and professional experience to provide consultative guidance.
     """
-    
     insight_patterns = {
-        "business growth": {
-            "keywords": ["business growth", "revenue growth", "scaling business", "expand business", "growth strategy"],
-            "insight": """Strategic Business Growth Framework:
-            
-1. CUSTOMER-CENTRIC GROWTH: Focus on deepening existing relationships before aggressive acquisition. In my experience, a 20% increase in customer retention can drive 95% increase in profitability. Implement quarterly business reviews with key accounts to identify expansion opportunities.
-2. DATA-DRIVEN DECISION MAKING: Leverage analytics to identify high-value customer segments. I've seen companies achieve 3x ROI by targeting the right customer profiles with personalized solutions rather than broad-based marketing.
-3. PRODUCT-LED GROWTH: Build features that naturally encourage expansion. Create value that makes customers want to upgrade. In previous roles, I've driven 40% YoY growth by aligning product roadmaps with customer success metrics.
-4. STRATEGIC PARTNERSHIPS: Identify complementary service providers for co-selling opportunities. This can reduce customer acquisition costs by 60% while expanding market reach.
-5. OPERATIONAL EXCELLENCE: Growth without scalable operations leads to churn. Invest in automation and process optimization early. Every dollar saved in operations can be reinvested in growth initiatives."""
-        },
-        
-        "retention strategy": {
-            "keywords": ["retention", "customer retention", "reduce churn", "keep customers", "customer loyalty"],
-            "insight": """Customer Retention Excellence Framework:
-1. PROACTIVE ENGAGEMENT: Don't wait for problems. Implement health score monitoring and reach out to at-risk accounts before they churn. I've reduced churn by 35% through proactive customer success programs.
-2. VALUE REALIZATION TRACKING: Ensure customers achieve measurable ROI within 90 days. Document success metrics and communicate wins regularly. Customers who see value early stay longer.
-3. EXECUTIVE SPONSORSHIP: Assign senior leaders to strategic accounts. This demonstrates commitment and enables faster issue resolution. Executive relationships are sticky.
-4. CONTINUOUS EDUCATION: Invest in customer training and enablement. Power users become advocates. Create certification programs and user communities.
-5. FEEDBACK LOOPS: Implement structured feedback mechanisms and act on insights. Customers who feel heard are more loyal. I've seen Net Promoter Scores improve by 25+ points through systematic feedback implementation.
-6. RENEWAL STRATEGY: Start renewal conversations 180 days early, not 30 days. Use the time to ensure adoption, address concerns, and identify expansion opportunities."""
-        },
-        
-        "leadership development": {
-            "keywords": ["leadership development", "develop leaders", "leadership skills", "becoming a leader", "lead team"],
-            "insight": """Leadership Development Blueprint:
-1. SELF-AWARENESS: Start with understanding your leadership style and blind spots. Seek 360-degree feedback regularly. The best leaders are self-reflective and continuously improving.
-2. PEOPLE INVESTMENT: Dedicate 40% of your time to coaching and developing others. Your success as a leader is measured by your team's growth. Create individual development plans for each team member.
-3. DECISION-MAKING FRAMEWORK: Develop a consistent approach to decisions. Be transparent about the reasoning. This builds trust and helps your team make better decisions independently.
-4. COMMUNICATION EXCELLENCE: Over-communicate vision and context. Repeat key messages. Ensure every team member understands how their work connects to broader goals.
-5. VULNERABILITY AND AUTHENTICITY: Admit mistakes and share lessons learned. This creates psychological safety and encourages innovation. Teams perform best when they feel safe taking calculated risks.
-6. STRATEGIC THINKING: Balance short-term execution with long-term vision. Allocate time for strategic planning, not just operational firefighting.
-7. CONFLICT RESOLUTION: Address issues directly and promptly. Unresolved conflicts compound. Approach disagreements as problem-solving opportunities."""
-        },
-        
-        "career advancement": {
-            "keywords": ["career growth", "career advancement", "promotion", "next level", "career development"],
-            "insight": """Career Advancement Strategy:
-1. OPERATE AT NEXT LEVEL: Start performing at the level above your current role 6-12 months before expecting promotion. Make yourself the obvious choice.
-2. VISIBILITY WITH IMPACT: Ensure your work is visible to decision-makers, but focus on impact over optics. Document achievements with quantifiable metrics.
-3. STRATEGIC NETWORKING: Build relationships across the organization. Understand the business beyond your function. Cross-functional influence accelerates advancement.
-4. SKILL DIVERSIFICATION: Develop T-shaped expertise - deep in your domain plus broad business acumen. Technical excellence alone isn't enough for senior roles.
-5. MENTORSHIP LEVERAGE: Find mentors at 2-3 levels above you. Learn from their experiences. Be specific about what guidance you need.
-6. VALUE CREATION: Focus on business outcomes, not just task completion. Solve problems that matter to the organization's strategic objectives.
-7. COMMUNICATION SKILLS: Develop executive presence and the ability to influence without authority. Senior roles require persuasion and stakeholder management.
-8. PATIENCE WITH PERSISTENCE: Career growth isn't linear. Stay patient but persistent. If growth stalls, be willing to make strategic lateral moves or external moves."""
-        },
-        
-        "performance analytics": {
-            "keywords": ["performance metrics", "kpi", "analytics", "measure performance", "track metrics"],
-            "insight": """Performance Analytics Framework:
-1. MEANINGFUL METRICS: Focus on metrics that drive behavior and outcomes. Avoid vanity metrics. Ask: 'If this improves, does the business improve?'
-2. LEADING VS LAGGING: Balance leading indicators (predictive) with lagging indicators (historical). Leading indicators enable proactive management.
-3. METRIC HIERARCHY: Establish clear connections between team metrics and company objectives. Every metric should ladder up to business impact.
-4. ACTIONABILITY: Metrics are useless without action. Create clear thresholds and response plans for when metrics hit certain levels.
-5. BENCHMARKING: Compare performance against industry standards and internal trends. Context matters more than absolute numbers.
-6. SEGMENTATION: Analyze metrics by customer segment, product line, and time period. Aggregated data can hide important insights.
-7. QUALITATIVE + QUANTITATIVE: Numbers tell you what's happening; conversations tell you why. Combine data analytics with customer feedback.
-8. REPORTING CADENCE: Match reporting frequency to decision-making needs. Real-time dashboards for operational metrics, monthly reviews for strategic metrics.
-9. DATA QUALITY: Invest in data accuracy and consistency. Poor data leads to poor decisions. Audit data sources regularly."""
-        },
-        
-        "team productivity": {
-            "keywords": ["productivity", "team efficiency", "improve performance", "team effectiveness"],
-            "insight": """Team Productivity Optimization:
-1. CLARITY OF PURPOSE: Ensure every team member understands priorities and how success is measured. Ambiguity kills productivity.
-2. REMOVE BLOCKERS: Your primary job as a leader is removing obstacles. Hold regular blocker reviews and act quickly.
-3. MEETING HYGIENE: Reduce meeting overhead by 30-40%. Every meeting needs a clear purpose, agenda, and owner. Default to 25-minute meetings.
-4. DEEP WORK TIME: Protect blocks of uninterrupted focus time. Some of the best work happens in 2-4 hour deep work sessions.
-5. TOOLING INVESTMENT: Invest in tools that automate repetitive tasks. The ROI on good tooling is often 10x within months.
-6. SKILL MATCHING: Align tasks with people's strengths while creating growth opportunities. Flow state drives productivity.
-7. FEEDBACK VELOCITY: Implement quick feedback loops. Waiting days for reviews kills momentum. Aim for same-day feedback on critical work.
-8. CELEBRATE WINS: Recognition drives engagement and productivity. Make wins visible across the team."""
-        },
-        
         "strategic planning": {
             "keywords": ["strategic planning", "strategy", "roadmap", "long term planning", "strategic initiatives"],
             "insight": """Strategic Planning Excellence:
@@ -150,7 +70,6 @@ def insight_skill(message, memory):
 8. REGULAR REVIEWS: Strategy is dynamic. Review quarterly and adjust based on learnings. Stubbornly sticking to a failing strategy is worse than pivoting.
 9. COMMUNICATION RHYTHM: Communicate strategy repeatedly through multiple channels. Assume people need to hear it 7 times before it sinks in."""
         },
-        
         "customer success strategy": {
             "keywords": ["customer success strategy", "cs strategy", "customer success playbook", "onboarding success", "expansion play", "qbr"],
             "insight": """Agent Vish Customer Success Playbook:
@@ -161,7 +80,6 @@ def insight_skill(message, memory):
 5. CS <> PRODUCT LOOP: Tag feedback to themes, quantify ARR-at-risk/ARR-opportunity, and feed a monthly Product-CS council.
 6. RENEWALS AS A MOTION: Start 180 days out, confirm value proof, surface expansion bundle options, and pre-negotiate blockers."""
         },
-        
         "f1 business best practices": {
             "keywords": ["f1 business", "formula 1", "pit stop ops", "race strategy", "f1 best practices", "f1 playbook"],
             "insight": """Agent Vish F1-Inspired Business Playbook:
@@ -171,7 +89,6 @@ def insight_skill(message, memory):
 4. CREW EXCELLENCE: Role clarity drills, cross-training, and 'hot lap' simulations for critical launches.
 5. TIRE MANAGEMENT ANALOGY: Balance burn rate vs. grip: stagger investments to sustain performance across the entire 'race season'."""
         },
-        
         "video content analytics": {
             "keywords": ["video analytics", "watch time", "retention curve", "hook rate", "content performance", "video funnel"],
             "insight": """Agent Vish Video Analytics Framework:
@@ -182,16 +99,161 @@ def insight_skill(message, memory):
 5. ROI MODEL: Attribute revenue to videos via UTMs and view-through conversions; prioritize topics with highest LTV per minute watched."""
         }
     }
-    
+
     message_lower = message.lower()
-    
     # Check for insight pattern matches
     for insight_topic, data in insight_patterns.items():
         for keyword in data["keywords"]:
             if keyword in message_lower:
                 return data["insight"]
-    
     return None
+
+
+def report_skill(message, memory):
+    """
+    Analyze tabular data stored in memory['report_data'] (CSV string, list of dicts,
+    or pandas-like DataFrame) when prompted with 'summarize report' or 'analyze spreadsheet'.
+    Returns a comprehensive summary including:
+    - total rows and columns
+    - column names
+    - total and average for each numeric column
+    - top row (max) for each numeric metric
+    - missing data info per column (count and percent)
+    """
+    triggers = ["summarize report", "analyze spreadsheet", "analyze sheet", "summarize spreadsheet", "summarize sheet"]
+    q = message.lower()
+    if not any(t in q for t in triggers):
+        return None
+
+    data = memory.get("report_data")
+    if data is None:
+        return "No report data found in memory['report_data']. Please load CSV/Excel content first."
+
+    # Helper: try to coerce to a uniform table representation
+    rows = []
+    columns = []
+
+    def is_number(x):
+        try:
+            if x is None or (isinstance(x, str) and x.strip() == ""):
+                return False
+            float(x)
+            return True
+        except Exception:
+            return False
+
+    # Case 1: pandas DataFrame-like (has to_dict and columns/shape attributes)
+    try:
+        if hasattr(data, "to_dict") and hasattr(data, "columns"):
+            columns = list(data.columns)
+            rows = [dict(zip(columns, row)) for row in data.values.tolist()]
+        elif isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
+            # list of dicts
+            # collect union of keys as columns
+            col_set = set()
+            for r in data:
+                col_set.update(r.keys())
+            columns = list(col_set)
+            # normalize rows (ensure all keys present)
+            for r in data:
+                rows.append({c: r.get(c) for c in columns})
+        elif isinstance(data, str):
+            # CSV text
+            import csv, io
+            reader = csv.DictReader(io.StringIO(data))
+            columns = reader.fieldnames or []
+            for r in reader:
+                rows.append(dict(r))
+        else:
+            # Unknown format
+            return "Unsupported report_data format. Provide CSV text, list of dicts, or a DataFrame."
+    except Exception as e:
+        return f"Failed to parse report_data: {e}"
+
+    total_rows = len(rows)
+    total_cols = len(columns)
+
+    # Identify numeric columns by scanning values
+    numeric_cols = []
+    for c in columns:
+        sample_vals = [r.get(c) for r in rows[:50]]  # sample to decide
+        nums = [v for v in sample_vals if is_number(v)]
+        if len(nums) >= max(1, int(0.2 * max(1, len(sample_vals)))):
+            numeric_cols.append(c)
+
+    # Compute totals, averages, top rows per numeric column
+    totals = {}
+    avgs = {}
+    top_rows = {}
+    for c in numeric_cols:
+        vals = []
+        for r in rows:
+            v = r.get(c)
+            if is_number(v):
+                vals.append(float(v))
+        if vals:
+            totals[c] = sum(vals)
+            avgs[c] = sum(vals) / len(vals)
+            # find top row for max metric
+            max_val = max(vals)
+            # get first row with that max value
+            for r in rows:
+                v = r.get(c)
+                if is_number(v) and float(v) == max_val:
+                    top_rows[c] = {"value": max_val, "row": r}
+                    break
+        else:
+            totals[c] = None
+            avgs[c] = None
+            top_rows[c] = None
+
+    # Missing data per column
+    missing_info = {}
+    for c in columns:
+        missing_count = 0
+        for r in rows:
+            v = r.get(c)
+            if v is None or (isinstance(v, str) and v.strip() == ""):
+                missing_count += 1
+        pct = (missing_count / total_rows * 100.0) if total_rows else 0.0
+        missing_info[c] = {"missing": missing_count, "percent": round(pct, 2)}
+
+    # Build summary string
+    from textwrap import shorten
+
+    def fmt_row(row):
+        # Keep row concise
+        items = []
+        for k in columns[:10]:  # limit to 10 columns for display
+            v = row.get(k)
+            s = str(v)
+            items.append(f"{k}={shorten(s, width=60, placeholder='…')}")
+        return ", ".join(items)
+
+    lines = []
+    lines.append("Report Summary:")
+    lines.append(f"- Total rows: {total_rows}")
+    lines.append(f"- Total columns: {total_cols}")
+    lines.append(f"- Columns: {', '.join(columns)}")
+
+    if numeric_cols:
+        lines.append("- Numeric column stats:")
+        for c in numeric_cols:
+            t = totals.get(c)
+            a = avgs.get(c)
+            lines.append(f"  • {c}: total={t if t is not None else 'n/a'}, average={a if a is not None else 'n/a'}")
+            tr = top_rows.get(c)
+            if tr and tr.get("row"):
+                lines.append(f"    top {c} value={tr['value']}, row: {fmt_row(tr['row'])}")
+    else:
+        lines.append("- No numeric columns detected.")
+
+    lines.append("- Missing data per column:")
+    for c in columns:
+        info = missing_info[c]
+        lines.append(f"  • {c}: missing={info['missing']} ({info['percent']}%)")
+
+    return "\n".join(lines)
 
 
 # Initialize bot and register all skills
@@ -199,4 +261,6 @@ if __name__ == "__main__":
     bot = AgenticAIBot()
     bot.add_skill(greet_skill)
     bot.add_skill(faq_skill)
-   
+    bot.add_skill(about_me_skill)
+    bot.add_skill(insight_skill)
+    bot.add_skill(report_skill)
