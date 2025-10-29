@@ -11,13 +11,12 @@ def greet_skill(user_input):
     
     return None
 
-
 def faq_skill(user_input):
     """
     FAQ skill - responds to frequently asked questions
     """
     faqs = {
-        'what is your name': 'I am Vishal AI Bot, your virtual assistant.',
+        'what is your name': 'I am Agent Vish, your virtual assistant.',
         'what can you do': 'I can help you with greetings, answer FAQs, and assist with various tasks.',
         'how are you': 'I am doing great! Thank you for asking. How can I assist you?',
         'who created you': 'I was created by Vishal Anand.'
