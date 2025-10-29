@@ -12,6 +12,7 @@ Agent Vish is an intelligent agentic AI assistant built with Python, featuring m
 - **Python-Based**: Built with modern Python practices for reliability and maintainability
 - **Flexible Integration**: Designed to work with various AI models and APIs
 - **Customizable Behavior**: Easy configuration to adapt the bot to specific use cases
+- **Data Analysis API**: Process CSV/Excel reports with automated analysis and recommendations
 
 ## Installation
 
@@ -63,245 +64,234 @@ bot.add_skill(greet_skill)
 bot.add_skill(faq_skill)
 bot.add_skill(about_me_skill)
 
-# Interact with the bot
-response = bot.receive_message("Hello!")
+# Start conversation
+response = bot.chat("Hello!")
 print(response)
 ```
 
-### Advanced Usage
+## API Endpoints
 
-#### Creating Custom Skills
+Agent Vish provides a Flask-based REST API for integration with external applications.
+
+### Starting the API Server
+
+```bash
+python api.py
+```
+
+The server will start on `http://localhost:5000` by default.
+
+### Available Endpoints
+
+#### 1. Chat Endpoint
+
+**URL:** `/chat`  
+**Method:** `POST`  
+**Description:** Interact with Agent Vish via text messages
+
+**Request Body:**
+```json
+{
+  "message": "Hello, Agent Vish!"
+}
+```
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Hello, Agent Vish!",
+  "response": "Agent Vish received: Hello, Agent Vish!"
+}
+```
+
+**Example:**
+```bash
+curl -X POST http://localhost:5000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello, Agent Vish!"}'
+```
+
+#### 2. Report Summarization Endpoint
+
+**URL:** `/api/summarize_report`  
+**Method:** `POST`  
+**Description:** Upload CSV or Excel files for automated data analysis, statistical summary, and AI-generated recommendations
+
+**Request:**
+- **Content-Type:** `multipart/form-data`
+- **Parameters:**
+  - `file` (required): CSV or Excel file (.csv, .xlsx, .xls)
+
+**Response:**
+```json
+{
+  "status": "success",
+  "summary": {
+    "total_rows": 1000,
+    "total_columns": 5,
+    "columns": ["column1", "column2", "column3", "column4", "column5"],
+    "column_types": {
+      "column1": "int64",
+      "column2": "float64",
+      "column3": "object"
+    },
+    "missing_values": {
+      "column1": 0,
+      "column2": 5,
+      "column3": 2
+    },
+    "total_missing_values": 7,
+    "numeric_columns": ["column1", "column2"],
+    "numeric_column_count": 2,
+    "categorical_columns": ["column3"],
+    "categorical_column_count": 1,
+    "duplicate_rows": 3,
+    "statistics": {
+      "column1": {
+        "count": 1000,
+        "mean": 50.5,
+        "std": 15.2,
+        "min": 10,
+        "25%": 35,
+        "50%": 50,
+        "75%": 65,
+        "max": 100
+      }
+    },
+    "strong_correlations": [
+      {
+        "column1": "column1",
+        "column2": "column2",
+        "correlation": 0.85
+      }
+    ],
+    "unique_value_counts": {
+      "column3": 50
+    },
+    "memory_usage_mb": 0.5
+  },
+  "recommendations": [
+    "Dataset has 7 missing values (0.1%). Review data collection process.",
+    "Found 3 duplicate rows (0.3%). Consider deduplication to improve data quality.",
+    "Dataset contains 2 numeric column(s). Consider statistical analysis, trend analysis, and predictive modeling.",
+    "Found 1 strong correlation(s) between numeric variables. Review for potential multicollinearity in predictive models.",
+    "Dataset has 1 categorical column(s). Consider encoding strategies for machine learning applications.",
+    "Consider creating visualizations: scatter plots, correlation heatmaps, and distribution plots for deeper insights.",
+    "Mixed data types present. Consider segmentation analysis and group comparisons for meaningful insights."
+  ]
+}
+```
+
+**Example with cURL:**
+```bash
+curl -X POST http://localhost:5000/api/summarize_report \
+  -F "file=@/path/to/your/report.csv"
+```
+
+**Example with Python:**
+```python
+import requests
+
+url = "http://localhost:5000/api/summarize_report"
+files = {"file": open("report.csv", "rb")}
+
+response = requests.post(url, files=files)
+result = response.json()
+
+print("Summary:", result["summary"])
+print("Recommendations:", result["recommendations"])
+```
+
+**Error Responses:**
+
+- **400 Bad Request:** Missing or invalid file
+```json
+{
+  "status": "error",
+  "error": "No file provided. Please upload a CSV or Excel file."
+}
+```
+
+- **400 Bad Request:** Unsupported file format
+```json
+{
+  "status": "error",
+  "error": "Unsupported file format: .txt. Please upload CSV or Excel files."
+}
+```
+
+- **500 Internal Server Error:** Processing error
+```json
+{
+  "status": "error",
+  "error": "An unexpected error occurred: [error details]"
+}
+```
+
+**Features:**
+- Comprehensive statistical analysis of numeric columns
+- Correlation detection for multicollinearity assessment
+- Missing value and duplicate detection
+- Categorical variable analysis with cardinality assessment
+- Outlier detection using IQR method
+- Memory usage analysis
+- Automated, actionable recommendations based on data characteristics
+- Support for both CSV and Excel formats (.csv, .xlsx, .xls)
+
+## Skills System
+
+### Core Skills
+
+Agent Vish includes the following built-in skills:
+
+1. **greet_skill**: Handles greetings and welcomes users
+2. **faq_skill**: Answers frequently asked questions
+3. **report_skill**: Processes and analyzes CSV/Excel data files
+
+### Creating Custom Skills
+
+You can easily extend Agent Vish by creating custom skills:
 
 ```python
-def custom_skill(message, memory):
-    """Your custom skill implementation"""
-    if "specific_keyword" in message.lower():
-        return "Custom response"
+def custom_skill(user_input):
+    """
+    Custom skill example
+    """
+    if "custom" in user_input.lower():
+        return "This is a custom response!"
     return None
 
+# Add to bot
 bot.add_skill(custom_skill)
 ```
 
-#### Using Memory
+## Architecture
 
-Agent Vish maintains conversation context through its memory system:
-
-```python
-# Memory is automatically managed
-bot.memory['user_preference'] = 'value'
-# Skills can access and modify memory
-```
-
-## Project Structure
+Agent Vish follows a modular architecture:
 
 ```
-agent-vish/
-├── agent_vish.py          # Main bot implementation
-├── requirements.txt       # Project dependencies
-├── config.py             # Configuration file (create from config.example.py)
-├── config.example.py     # Example configuration
-├── README.md             # This file
-├── tests/                # Test suite
-│   ├── test_bot.py
-│   └── test_skills.py
-└── docs/                 # Additional documentation
-    ├── architecture.md
-    ├── skills_guide.md
-    └── api_reference.md
+vishal-ai-bot/
+├── agent_vish.py       # Main bot logic and agentic framework
+├── api.py              # Flask API endpoints
+├── skills/             # Modular skills directory
+│   └── core_skills.py  # Core skill implementations
+├── config.py           # Configuration settings
+└── requirements.txt    # Python dependencies
 ```
-
-## Core Components
-
-### AgenticAIBot Class
-
-The main class that orchestrates the bot's functionality:
-
-- **Initialization**: Sets up the bot with a name and empty skills/memory
-- **Skill Management**: Add and manage modular skills
-- **Message Processing**: Routes messages through skills for agentic decision making
-- **Memory Management**: Maintains persistent context across interactions
-
-### Skills System
-
-Skills are modular functions that process messages and return responses:
-
-```python
-def skill_template(message, memory):
-    # Process message
-    # Access/modify memory if needed
-    # Return response or None
-    return response_or_none
-```
-
-## Configuration
-
-Agent Vish can be configured through the `config.py` file:
-
-```python
-# config.py example
-BOT_NAME = "Agent Vish"
-API_KEYS = {
-    'openai': 'your-api-key',
-    # Add other API keys as needed
-}
-MEMORY_PERSISTENCE = True
-LOG_LEVEL = 'INFO'
-```
-
-## Available Skills
-
-### Built-in Skills
-
-1. **greet_skill**: Handles greeting messages
-2. **faq_skill**: Answers frequently asked questions about agentic AI
-3. **about_me_skill**: Provides detailed information about Vishal Anand
-   - Handles questions about team leadership challenges
-   - Provides insights on handling escalations
-   - Shares leadership philosophy
-   - Discusses upsell and cross-sell strategies
-
-## Testing
-
-Run the test suite:
-
-```bash
-python -m pytest tests/
-```
-
-Run with coverage:
-
-```bash
-python -m pytest --cov=agent_vish tests/
-```
-
-## Development
-
-### Setting Up Development Environment
-
-1. Clone the repository
-2. Install development dependencies:
-```bash
-pip install -r requirements-dev.txt
-```
-3. Set up pre-commit hooks:
-```bash
-pre-commit install
-```
-
-### Code Style
-
-This project follows PEP 8 style guidelines:
-
-```bash
-# Format code
-black agent_vish.py
-
-# Lint code
-flake8 agent_vish.py
-```
-
-## Deployment
-
-### Local Deployment
-
-```bash
-python agent_vish.py
-```
-
-### Docker Deployment
-
-```bash
-# Build image
-docker build -t agent-vish .
-
-# Run container
-docker run -d -p 8000:8000 agent-vish
-```
-
-### Cloud Deployment
-
-Agent Vish can be deployed to various cloud platforms:
-
-- **AWS Lambda**: Serverless deployment
-- **Google Cloud Run**: Containerized deployment
-- **Azure Functions**: Serverless deployment
-- **Heroku**: Platform-as-a-Service deployment
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Import Errors**: Ensure all dependencies are installed
-```bash
-pip install -r requirements.txt
-```
-
-2. **Memory Issues**: Clear the memory cache if needed
-```python
-bot.memory.clear()
-```
-
-3. **Skill Not Responding**: Check skill order and return values
-
-## Roadmap
-
-- [ ] Add more sophisticated NLP capabilities
-- [ ] Implement multi-language support
-- [ ] Add voice interaction capabilities
-- [ ] Develop GUI interface
-- [ ] Create plugin marketplace
-- [ ] Add integration with popular APIs
-- [ ] Implement advanced learning mechanisms
 
 ## Contributing
 
-We welcome contributions! Here's how you can help:
-
-### How to Contribute
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Contribution Guidelines
-
-- **Code Quality**: Follow PEP 8 and include tests
-- **Documentation**: Update documentation to reflect any changes
-- **Commit Messages**: Use clear, descriptive commit messages
-- **Issue First**: For major changes, open an issue first to discuss the proposed changes
-
-### Areas for Contribution
-
-- Adding new skills and capabilities
-- Improving memory management
-- Enhancing decision-making algorithms
-- Bug fixes and performance improvements
-- Documentation improvements
-- Test coverage expansion
-
-## Contact Information
-
-- **Repository Owner**: Vishal Anand
-- **GitHub**: [@vishalanand-create](https://github.com/vishalanand-create)
-- **Project Repository**: [vishal-ai-bot](https://github.com/vishalanand-create/vishal-ai-bot)
-
-For questions, suggestions, or support:
-- Open an [Issue](https://github.com/vishalanand-create/vishal-ai-bot/issues)
-- Submit a [Pull Request](https://github.com/vishalanand-create/vishal-ai-bot/pulls)
-- Start a [Discussion](https://github.com/vishalanand-create/vishal-ai-bot/discussions)
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
+MIT License
 
-## Acknowledgments
+## Author
 
-- Thanks to all contributors who help improve this project
-- Built with modern Python and AI technologies
-- Inspired by the need for flexible, intelligent automation
+Vishal Anand
 
----
+## Support
 
-**Note**: This bot is under active development. Features and APIs may change as the project evolves. Check back regularly for updates!
+For issues, questions, or suggestions, please open an issue on GitHub.
