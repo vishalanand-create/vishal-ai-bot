@@ -34,3 +34,6 @@ logger = logging.getLogger(__name__)
 try:
     agent_vish = AgenticAIBot()
     logger.info("Agent Vish initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize Agent Vish: {e}")
+    agent_vish = None
