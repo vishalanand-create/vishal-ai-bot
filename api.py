@@ -37,3 +37,8 @@ try:
 except Exception as e:
     logger.error(f"Failed to initialize Agent Vish: {e}")
     agent_vish = None
+
+# Health check endpoint for Render
+@app.route('/', methods=['GET'])
+def home():
+    return 'Agent Vish API is running.'
