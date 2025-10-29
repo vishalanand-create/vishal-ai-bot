@@ -1,14 +1,15 @@
 # agent_vish.py
+from skills.analytics_skill import analytics_skill
+
 class AgenticAIBot:
-    
     def __init__(self, name="Agent Vish"):
         self.name = name
         self.skills = []
         self.memory = {}
-    
+
     def add_skill(self, skill_fn):
         self.skills.append(skill_fn)
-    
+
     def receive_message(self, message):
         # Agentic processing
         for skill in self.skills:
@@ -16,10 +17,13 @@ class AgenticAIBot:
             if result is not None:
                 return result
         return f"{self.name} could not understand your request."
+
 # Sample skills
+
 def greet_skill(message, memory):
     if "hello" in message.lower():
         return "Hello! How can I assist you today?"
+
 
 def faq_skill(message, memory):
     if "what is agentic ai" in message.lower():
@@ -39,13 +43,11 @@ def about_me_skill(message, memory):
         "leadership approach": "My leadership approach centers on empowerment and clarity. I believe in setting clear goals and then trusting my team to execute while providing support when needed. I focus on removing blockers and creating an environment where people feel safe to innovate and take calculated risks. I practice servant leadership - my role is to enable the team's success. Regular feedback, both giving and receiving, is crucial. I also believe in leading by example, whether it's code quality, communication standards, or work ethic.",
         "upsell cross-sell strategy": "My upsell and cross-sell strategy is built on deep customer understanding and value delivery. First, I ensure we're delivering exceptional value on the current engagement - satisfied customers are receptive to expansion. I analyze usage patterns and customer goals to identify natural expansion opportunities. Then, I focus on consultative conversations rather than sales pitches - understanding their evolving needs and demonstrating how additional solutions solve real problems. Timing is crucial, so I look for trigger events like successful project completions, business growth, or new initiatives. I also leverage customer success metrics to build business cases that show clear ROI."
     }
-
     # Check incoming message against Q&A patterns
     message_lower = message.lower()
     for question_pattern, answer in qa_pairs.items():
         if question_pattern in message_lower:
             return answer
-
     # Continue with existing logic if no pattern matches
     return None
 
@@ -99,7 +101,6 @@ def insight_skill(message, memory):
 5. ROI MODEL: Attribute revenue to videos via UTMs and view-through conversions; prioritize topics with highest LTV per minute watched."""
         }
     }
-
     message_lower = message.lower()
     # Check for insight pattern matches
     for insight_topic, data in insight_patterns.items():
@@ -124,11 +125,9 @@ def report_skill(message, memory):
     q = message.lower()
     if not any(t in q for t in triggers):
         return None
-
     data = memory.get("report_data")
     if data is None:
         return "No report data found in memory['report_data']. Please load CSV/Excel content first."
-
     # Helper: try to coerce to a uniform table representation
     rows = []
     columns = []
@@ -235,7 +234,6 @@ def report_skill(message, memory):
     lines.append(f"- Total rows: {total_rows}")
     lines.append(f"- Total columns: {total_cols}")
     lines.append(f"- Columns: {', '.join(columns)}")
-
     if numeric_cols:
         lines.append("- Numeric column stats:")
         for c in numeric_cols:
@@ -264,3 +262,4 @@ if __name__ == "__main__":
     bot.add_skill(about_me_skill)
     bot.add_skill(insight_skill)
     bot.add_skill(report_skill)
+    bot.add_skill(lambda msg, mem: analytics_skill(msg))
