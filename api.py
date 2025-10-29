@@ -5,7 +5,7 @@ app = Flask(__name__)
 @app.route('/chat', methods=['POST'])
 def chat():
     """
-    Chat endpoint to interact with Vishal AI Bot.
+    Chat endpoint to interact with Agent Vish.
     Expects JSON with 'message' field and returns bot response.
     """
     try:
@@ -20,9 +20,9 @@ def chat():
         
         user_message = data['message']
         
-        # TODO: Replace this with actual Vishal AI Bot logic
+        # TODO: Replace this with actual Agent Vish logic
         # For now, this is a simple echo response
-        bot_response = f"Vishal AI Bot received: {user_message}"
+        bot_response = f"Agent Vish received: {user_message}"
         
         # Return bot response as JSON
         return jsonify({
@@ -43,7 +43,7 @@ def health():
     """
     return jsonify({
         'status': 'healthy',
-        'service': 'Vishal AI Bot API'
+        'service': 'Agent Vish API'
     }), 200
 
 if __name__ == '__main__':
