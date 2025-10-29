@@ -1,4 +1,4 @@
-# Configuration file for Vishal AI Bot
+# Configuration file for Agent Vish
 # Copy this file to config.py and fill in your actual values
 
 # API Keys
@@ -7,7 +7,7 @@ API_SECRET = "your_api_secret_here"
 BOT_TOKEN = "your_bot_token_here"
 
 # Bot Configuration
-BOT_NAME = "Vishal AI Bot"
+BOT_NAME = "Agent Vish"
 BOT_PREFIX = "!"
 MAX_MESSAGE_LENGTH = 2000
 
