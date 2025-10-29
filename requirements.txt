@@ -2,3 +2,4 @@ requests
 pytest
 flask
 gunicorn
+flask-cors
