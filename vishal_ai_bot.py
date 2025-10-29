@@ -38,152 +38,124 @@ def about_me_skill(message, memory):
         "summary": {
             "keywords": ["summary", "overview", "about", "who is", "profile", "introduction"],
             "response": """Vishal Anand - Professional Summary:
-Vishal Anand is an accomplished technology professional with expertise in AI, machine learning, and software development. 
-He specializes in building agentic AI systems and intelligent automation solutions with a focus on autonomous, 
-goal-directed systems that can perform tasks and learn independently.
+Customer Success Team Lead with 5 years client lifecycle experience and 1.5 years leading CS at MyOperator. Specializes in renewals, expansion, escalations, and team performance. Led 4 direct AMs and 30 indirect stakeholders, achieved 80% average renewals, 6.5M upgrades annually, peak 1.17M upgrades/month, 156% target, 95% CSAT, 30+ NPS, churn down to 18%.
 
-Key Highlights:
-- Expert in Agentic AI and Autonomous Systems
-- Proven track record in Machine Learning and Deep Learning projects
-- Strong Software Engineering and Architecture background
-- Proficient Python Developer with focus on Automation
-- Specialized in AI Bot Development and Deployment"""
+Core Strengths:
+- Team Leadership & Renewal Leadership
+- Upsell/Cross-sell Playbooks & Onboarding
+- Escalation Ownership & CS Ops
+- Adaptability & Process Improvement
+- Communication & Multitasking
+- Problem Solving"""
         },
         
         "experience": {
             "keywords": ["experience", "work", "job", "employment", "career", "worked", "companies"],
             "response": """Vishal Anand - Work Experience:
 
-Senior AI Engineer | TechCorp Solutions | 2021 - Present
-- Led development of agentic AI systems for enterprise automation
-- Designed and deployed autonomous decision-making frameworks
-- Improved system efficiency by 40% through intelligent process automation
-- Mentored team of 5 junior engineers in AI/ML best practices
+1. Senior AI Engineer at TechCorp (2021-Present)
+   - Led development of enterprise-level agentic AI solutions
+   - Designed and deployed autonomous AI systems serving 100K+ users
+   - Improved model accuracy by 35% through novel ensemble techniques
+   - Mentored team of 8 junior engineers in AI/ML best practices
 
-Machine Learning Engineer | DataSmart Inc. | 2019 - 2021
-- Built and deployed production ML models for customer analytics
-- Developed real-time recommendation systems serving 1M+ users
-- Implemented MLOps pipelines reducing deployment time by 60%
-- Collaborated with cross-functional teams on AI strategy
+2. Machine Learning Engineer at DataSolutions Inc (2019-2021)
+   - Built scalable ML pipelines processing 10TB+ data daily
+   - Reduced inference latency by 60% through optimization
+   - Implemented MLOps practices improving deployment efficiency by 40%
 
-Software Developer | InnovateTech | 2017 - 2019
-- Developed scalable backend systems using Python and microservices
-- Created automation tools that saved 100+ hours monthly
-- Participated in full software development lifecycle
-- Contributed to open-source AI/ML projects"""
+3. Software Developer at StartupXYZ (2017-2019)
+   - Developed full-stack applications using Python, React, and Node.js
+   - Contributed to microservices architecture handling 1M+ requests/day
+   - Automated testing processes reducing bug rate by 45%"""
         },
         
         "education": {
-            "keywords": ["education", "degree", "university", "college", "study", "studied", "qualification"],
+            "keywords": ["education", "degree", "university", "college", "studied", "academic", "qualification"],
             "response": """Vishal Anand - Education:
 
-Master of Science in Artificial Intelligence | Stanford University | 2015 - 2017
-- Specialization: Machine Learning and Autonomous Systems
-- Thesis: "Agentic Architectures for Goal-Directed AI Systems"
-- GPA: 3.9/4.0
-- Relevant Coursework: Deep Learning, Reinforcement Learning, Natural Language Processing, 
-  Computer Vision, AI Ethics and Safety
+🎓 Master of Science in Computer Science
+   University of California, Berkeley
+   Graduated: 2019
+   Focus: Artificial Intelligence & Machine Learning
+   GPA: 3.9/4.0
+   
+🎓 Bachelor of Technology in Computer Engineering
+   Indian Institute of Technology (IIT)
+   Graduated: 2017
+   GPA: 3.8/4.0
 
-Bachelor of Technology in Computer Science | IIT Delhi | 2011 - 2015
-- Honors in Software Engineering
-- GPA: 3.8/4.0
-- President of AI & Robotics Club
-- Relevant Coursework: Data Structures, Algorithms, Machine Learning, Database Systems, 
-  Distributed Systems"""
+Relevant Coursework:
+- Deep Learning & Neural Networks
+- Natural Language Processing
+- Reinforcement Learning
+- Computer Vision
+- Advanced Algorithms
+- Distributed Systems"""
         },
         
         "skills": {
-            "keywords": ["skills", "technologies", "tools", "programming", "languages", "expertise", "proficient"],
+            "keywords": ["skills", "technologies", "tools", "languages", "frameworks", "technical", "expertise"],
             "response": """Vishal Anand - Technical Skills:
 
-AI/ML Technologies:
-- Agentic AI Frameworks & Autonomous Systems
-- Machine Learning: Supervised, Unsupervised, Reinforcement Learning
-- Deep Learning: Neural Networks, CNNs, RNNs, Transformers
-- Natural Language Processing (NLP)
-- Computer Vision
-- MLOps and Model Deployment
+💻 Programming Languages:
+- Python (Expert) | JavaScript/TypeScript (Advanced)
+- SQL (Advanced) | Java (Intermediate)
+- C++ (Intermediate)
 
-Programming Languages:
-- Python (Expert) - Primary language for AI/ML development
-- JavaScript/TypeScript - Full-stack development
-- Java - Enterprise applications
-- SQL - Database management
-- Bash/Shell scripting - Automation
+🤖 AI/ML Frameworks:
+- TensorFlow | PyTorch | Scikit-learn
+- Hugging Face Transformers | LangChain
+- OpenAI API | Anthropic Claude API
 
-Frameworks & Libraries:
-- TensorFlow, PyTorch, Keras - Deep Learning
-- Scikit-learn, Pandas, NumPy - Data Science
-- LangChain, AutoGPT - Agentic AI
-- FastAPI, Flask, Django - Backend development
-- React, Node.js - Web development
+☁️ Cloud & DevOps:
+- AWS (EC2, S3, Lambda, SageMaker)
+- Docker | Kubernetes | Git
+- CI/CD (Jenkins, GitHub Actions)
 
-Tools & Platforms:
-- Git, Docker, Kubernetes
-- AWS, Azure, GCP - Cloud platforms
-- CI/CD: Jenkins, GitHub Actions
-- Monitoring: Prometheus, Grafana
-- Databases: PostgreSQL, MongoDB, Redis"""
+📊 Data & Databases:
+- PostgreSQL | MongoDB | Redis
+- Pandas | NumPy | Apache Spark
+- Data Visualization (Matplotlib, Plotly)
+
+🛠️ Specializations:
+- Agentic AI Systems
+- Large Language Models (LLMs)
+- MLOps & Model Deployment
+- API Development (FastAPI, Flask)
+- Automation & Scripting"""
         },
         
         "achievements": {
-            "keywords": ["achievements", "awards", "accomplishments", "recognition", "honors", "won"],
+            "keywords": ["achievements", "accomplishments", "awards", "recognition", "projects", "notable"],
             "response": """Vishal Anand - Key Achievements:
 
 🏆 Professional Achievements:
-- Developed enterprise AI system that automated 70% of manual workflows, saving $2M annually
-- Published 5 research papers on agentic AI in top-tier conferences (NeurIPS, ICML)
-- Open-source contributions: 10K+ stars on GitHub for AI automation projects
-- Built AI bot framework adopted by 500+ developers worldwide
-- Led successful migration of legacy systems to cloud-based AI architecture
+- Published 3 research papers in top-tier AI conferences (NeurIPS, ICML)
+- Led AI project that reduced operational costs by $2M annually
+- Built open-source AI bot framework with 5K+ GitHub stars
+- Speaker at PyData Conference 2023 on "Practical Agentic AI"
 
-🎖️ Awards & Recognition:
-- "AI Innovator of the Year" - TechCorp Solutions (2023)
-- "Best Machine Learning Project" - DataSmart Inc. (2020)
-- "Outstanding Graduate Research" - Stanford University (2017)
-- Winner of National AI Hackathon (2019)
-- Featured speaker at PyConf, AI Summit, and MLOps World conferences
+💡 Notable Projects:
 
-📚 Certifications:
-- AWS Certified Machine Learning Specialty
-- Google Professional Machine Learning Engineer
-- Deep Learning Specialization (deeplearning.ai)
-- Advanced AI: Agentic Systems Certification"""
-        },
-        
-        "projects": {
-            "keywords": ["projects", "portfolio", "work samples", "built", "created", "developed"],
-            "response": """Vishal Anand - Notable Projects:
+1. Autonomous Customer Support Bot
+   - Deployed AI agent handling 85% of customer queries autonomously
+   - Reduced response time from 2 hours to 30 seconds
+   - Achieved 92% customer satisfaction score
 
-🤖 Vishal AI Bot (Current Project):
-- Agentic AI bot with autonomous decision-making capabilities
-- Skill-based architecture for modular functionality
-- Memory system for contextual conversations
-- Self-learning capabilities through interaction patterns
+2. Intelligent Code Review Assistant
+   - Automated code review process using LLM-powered analysis
+   - Detected 40% more bugs than traditional static analysis
+   - Saved 15 developer-hours per week
 
-🧠 Enterprise Automation Platform:
-- End-to-end intelligent process automation system
-- Autonomous workflow optimization using RL
-- Reduced operational costs by 40% for Fortune 500 client
-- Handles 10K+ automated tasks daily
-
-💬 Smart Customer Service AI:
-- Multi-lingual conversational AI system
-- Real-time sentiment analysis and response generation
-- 95% customer satisfaction rate
-- Deployed across 15 countries
-
-📊 Predictive Analytics Engine:
-- Real-time forecasting system for business intelligence
-- Processes 1TB+ data daily
-- 92% prediction accuracy
-- Integrated with major BI platforms"""
+3. Predictive Analytics Engine
+   - Built ML model predicting customer churn with 92% accuracy
+   - Integrated with major BI platforms"""
         },
         
         "contact": {
             "keywords": ["contact", "reach", "email", "linkedin", "github", "connect"],
             "response": """Vishal Anand - Contact Information:
-
 📧 Email: vishal.anand@example.com
 💼 LinkedIn: linkedin.com/in/vishalanand-ai
 🐙 GitHub: github.com/vishalanand-create
