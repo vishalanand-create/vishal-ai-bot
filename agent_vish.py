@@ -6,6 +6,14 @@ class AgenticAIBot:
         self.name = name
         self.skills = []
         self.memory = {}
+        # Always register core skills so they're available for API/backends
+        self.add_skill(greet_skill)
+        self.add_skill(faq_skill)
+        self.add_skill(about_me_skill)
+        self.add_skill(insight_skill)
+        self.add_skill(report_skill)
+        # Wrap analytics_skill to match (message, memory) signature
+        self.add_skill(lambda msg, mem: analytics_skill(msg))
 
     def add_skill(self, skill_fn):
         self.skills.append(skill_fn)
@@ -33,7 +41,7 @@ def faq_skill(message, memory):
 def about_me_skill(message, memory):
     """
     Enhanced skill function to provide detailed Q&A about Vishal Anand.
-    Uses structured data from resume including summary, work experience, 
+    Uses structured data from resume including summary, work experience,
     education, skills, and achievements. Responds contextually based on keywords.
     """
     # Structured Q&A data extracted from Vishal Anand's resume
@@ -125,9 +133,11 @@ def report_skill(message, memory):
     q = message.lower()
     if not any(t in q for t in triggers):
         return None
+
     data = memory.get("report_data")
     if data is None:
         return "No report data found in memory['report_data']. Please load CSV/Excel content first."
+
     # Helper: try to coerce to a uniform table representation
     rows = []
     columns = []
@@ -253,13 +263,7 @@ def report_skill(message, memory):
 
     return "\n".join(lines)
 
-
-# Initialize bot and register all skills
+# Remove manual registration in __main__; skills are registered in __init__
 if __name__ == "__main__":
     bot = AgenticAIBot()
-    bot.add_skill(greet_skill)
-    bot.add_skill(faq_skill)
-    bot.add_skill(about_me_skill)
-    bot.add_skill(insight_skill)
-    bot.add_skill(report_skill)
-    bot.add_skill(lambda msg, mem: analytics_skill(msg))
+    pass
