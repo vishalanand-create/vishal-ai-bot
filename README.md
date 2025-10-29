@@ -1,8 +1,8 @@
-# vishal-ai-bot
+# agent-vish
 
 ## Introduction
 
-Vishal AI Bot is an intelligent agentic AI assistant built with Python, featuring modular skills architecture and persistent memory capabilities. This bot implements sophisticated agentic decision flows, enabling it to autonomously handle complex tasks, make contextual decisions, and maintain conversation history across sessions.
+Agent Vish is an intelligent agentic AI assistant built with Python, featuring modular skills architecture and persistent memory capabilities. This bot implements sophisticated agentic decision flows, enabling it to autonomously handle complex tasks, make contextual decisions, and maintain conversation history across sessions.
 
 ## Key Features
 
@@ -43,140 +43,231 @@ pip install -r requirements.txt
 4. Set up configuration:
 - Copy the example configuration file
 - Add your API keys and customize settings as needed
-
 ```bash
 cp config.example.py config.py
 # Edit config.py with your settings
 ```
 
-## Usage
+## Quick Start
 
 ### Basic Usage
 
-Run the bot with:
-
-```bash
-python vishal_ai_bot.py
-```
-
-### Example Usage
-
 ```python
-from vishal_ai_bot import VishalAIBot
+from agent_vish import AgenticAIBot, greet_skill, faq_skill, about_me_skill
 
-# Initialize the bot
-bot = VishalAIBot()
+# Initialize Agent Vish
+bot = AgenticAIBot(name="Agent Vish")
 
-# Start a conversation
-response = bot.chat("Hello, can you help me with a task?")
+# Add skills
+bot.add_skill(greet_skill)
+bot.add_skill(faq_skill)
+bot.add_skill(about_me_skill)
+
+# Interact with the bot
+response = bot.receive_message("Hello!")
 print(response)
-
-# The bot maintains context across interactions
-response = bot.chat("What was I just asking about?")
-print(response)
-
-# Access bot's memory
-memory = bot.get_memory()
-print(f"Conversation history: {memory}")
 ```
 
 ### Advanced Usage
 
-Add custom skills to the bot:
+#### Creating Custom Skills
 
 ```python
-from vishal_ai_bot import VishalAIBot
+def custom_skill(message, memory):
+    """Your custom skill implementation"""
+    if "specific_keyword" in message.lower():
+        return "Custom response"
+    return None
 
-# Define a custom skill
-def custom_skill(input_data):
-    # Your custom logic here
-    return processed_data
-
-# Register the skill
-bot = VishalAIBot()
-bot.register_skill("custom_task", custom_skill)
-
-# Use the custom skill
-result = bot.execute_skill("custom_task", data)
+bot.add_skill(custom_skill)
 ```
 
-## Configuration
+#### Using Memory
 
-The bot can be configured through the `config.py` file:
+Agent Vish maintains conversation context through its memory system:
 
-- **API Keys**: Set up your AI model API credentials
-- **Memory Settings**: Configure persistence and storage options
-- **Skill Modules**: Enable or disable specific skills
-- **Logging**: Adjust verbosity and output preferences
+```python
+# Memory is automatically managed
+bot.memory['user_preference'] = 'value'
+# Skills can access and modify memory
+```
 
 ## Project Structure
 
 ```
-vishal-ai-bot/
-│
-├── vishal_ai_bot.py      # Main bot implementation
+agent-vish/
+├── agent_vish.py          # Main bot implementation
+├── requirements.txt       # Project dependencies
+├── config.py             # Configuration file (create from config.example.py)
+├── config.example.py     # Example configuration
 ├── README.md             # This file
-├── requirements.txt      # Python dependencies
-├── config.example.py     # Example configuration file
-│
-├── skills/               # Modular skill implementations
-│   ├── __init__.py
-│   ├── core_skills.py
-│   └── custom_skills.py
-│
-├── memory/               # Memory and persistence layer
-│   ├── __init__.py
-│   └── memory_manager.py
-│
-└── tests/                # Unit tests
-    └── test_bot.py
+├── tests/                # Test suite
+│   ├── test_bot.py
+│   └── test_skills.py
+└── docs/                 # Additional documentation
+    ├── architecture.md
+    ├── skills_guide.md
+    └── api_reference.md
 ```
+
+## Core Components
+
+### AgenticAIBot Class
+
+The main class that orchestrates the bot's functionality:
+
+- **Initialization**: Sets up the bot with a name and empty skills/memory
+- **Skill Management**: Add and manage modular skills
+- **Message Processing**: Routes messages through skills for agentic decision making
+- **Memory Management**: Maintains persistent context across interactions
+
+### Skills System
+
+Skills are modular functions that process messages and return responses:
+
+```python
+def skill_template(message, memory):
+    # Process message
+    # Access/modify memory if needed
+    # Return response or None
+    return response_or_none
+```
+
+## Configuration
+
+Agent Vish can be configured through the `config.py` file:
+
+```python
+# config.py example
+BOT_NAME = "Agent Vish"
+API_KEYS = {
+    'openai': 'your-api-key',
+    # Add other API keys as needed
+}
+MEMORY_PERSISTENCE = True
+LOG_LEVEL = 'INFO'
+```
+
+## Available Skills
+
+### Built-in Skills
+
+1. **greet_skill**: Handles greeting messages
+2. **faq_skill**: Answers frequently asked questions about agentic AI
+3. **about_me_skill**: Provides detailed information about Vishal Anand
+   - Handles questions about team leadership challenges
+   - Provides insights on handling escalations
+   - Shares leadership philosophy
+   - Discusses upsell and cross-sell strategies
+
+## Testing
+
+Run the test suite:
+
+```bash
+python -m pytest tests/
+```
+
+Run with coverage:
+
+```bash
+python -m pytest --cov=agent_vish tests/
+```
+
+## Development
+
+### Setting Up Development Environment
+
+1. Clone the repository
+2. Install development dependencies:
+```bash
+pip install -r requirements-dev.txt
+```
+3. Set up pre-commit hooks:
+```bash
+pre-commit install
+```
+
+### Code Style
+
+This project follows PEP 8 style guidelines:
+
+```bash
+# Format code
+black agent_vish.py
+
+# Lint code
+flake8 agent_vish.py
+```
+
+## Deployment
+
+### Local Deployment
+
+```bash
+python agent_vish.py
+```
+
+### Docker Deployment
+
+```bash
+# Build image
+docker build -t agent-vish .
+
+# Run container
+docker run -d -p 8000:8000 agent-vish
+```
+
+### Cloud Deployment
+
+Agent Vish can be deployed to various cloud platforms:
+
+- **AWS Lambda**: Serverless deployment
+- **Google Cloud Run**: Containerized deployment
+- **Azure Functions**: Serverless deployment
+- **Heroku**: Platform-as-a-Service deployment
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Import Errors**: Ensure all dependencies are installed
+```bash
+pip install -r requirements.txt
+```
+
+2. **Memory Issues**: Clear the memory cache if needed
+```python
+bot.memory.clear()
+```
+
+3. **Skill Not Responding**: Check skill order and return values
+
+## Roadmap
+
+- [ ] Add more sophisticated NLP capabilities
+- [ ] Implement multi-language support
+- [ ] Add voice interaction capabilities
+- [ ] Develop GUI interface
+- [ ] Create plugin marketplace
+- [ ] Add integration with popular APIs
+- [ ] Implement advanced learning mechanisms
 
 ## Contributing
 
-We welcome contributions from the community! Here's how you can help:
+We welcome contributions! Here's how you can help:
 
 ### How to Contribute
 
-1. **Fork the Repository**
-   - Click the 'Fork' button at the top right of this page
-
-2. **Clone Your Fork**
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/vishal-ai-bot.git
-   cd vishal-ai-bot
-   ```
-
-3. **Create a Feature Branch**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-
-4. **Make Your Changes**
-   - Write clean, documented code
-   - Follow existing code style and conventions
-   - Add tests for new features
-
-5. **Commit Your Changes**
-   ```bash
-   git add .
-   git commit -m "Add: Description of your changes"
-   ```
-
-6. **Push to Your Fork**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
-7. **Submit a Pull Request**
-   - Go to the original repository
-   - Click 'New Pull Request'
-   - Provide a clear description of your changes
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ### Contribution Guidelines
 
-- **Code Quality**: Ensure code is clean, well-commented, and follows PEP 8 standards
-- **Testing**: Add unit tests for new features and ensure all tests pass
+- **Code Quality**: Follow PEP 8 and include tests
 - **Documentation**: Update documentation to reflect any changes
 - **Commit Messages**: Use clear, descriptive commit messages
 - **Issue First**: For major changes, open an issue first to discuss the proposed changes
