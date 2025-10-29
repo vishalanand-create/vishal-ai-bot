@@ -1,21 +1,94 @@
 from flask import Flask, request, jsonify
-import pandas as pd
-import io
+from flask_cors import CORS
 import os
+import sys
+import logging
+from datetime import datetime
 
-app = Flask(__name__)
+# Add the current directory to Python path to import agent_vish
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Import report_skill from skills module
 try:
-    from skills.core_skills import report_skill
+    from agent_vish import AgentVish
 except ImportError:
-    report_skill = None
+    print("Warning: Could not import AgentVish. Creating a mock version.")
+    class AgentVish:
+        def __init__(self):
+            self.skills = {}
+            
+        def process_message(self, message):
+            return f"Agent Vish received: {message}"
+            
+        def get_available_skills(self):
+            return ["conversation", "analysis", "help"]
+
+# Initialize Flask app
+app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Initialize Agent Vish
+try:
+    agent_vish = AgentVish()
+    logger.info("Agent Vish initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize Agent Vish: {e}")
+    agent_vish = AgentVish()  # Use mock version
+
+# Store conversation history (in production, use a database)
+conversation_history = []
+
+@app.route('/', methods=['GET'])
+def home():
+    """Home endpoint providing API information"""
+    return jsonify({
+        'service': 'Agent Vish API',
+        'version': '1.0.0',
+        'status': 'active',
+        'endpoints': {
+            '/': 'GET - API information',
+            '/health': 'GET - Health check',
+            '/chat': 'POST - Chat with Agent Vish',
+            '/skills': 'GET - List available skills',
+            '/conversation': 'GET - Get conversation history',
+            '/conversation/clear': 'POST - Clear conversation history'
+        },
+        'description': 'Flask API for Agent Vish - An AI assistant with multiple skills'
+    })
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'healthy',
+        'timestamp': datetime.now().isoformat(),
+        'agent_status': 'active' if agent_vish else 'inactive',
+        'version': '1.0.0'
+    }), 200
 
 @app.route('/chat', methods=['POST'])
 def chat():
     """
-    Chat endpoint to interact with Agent Vish.
-    Expects JSON with 'message' field and returns bot response.
+    Main chat endpoint to interact with Agent Vish.
+    
+    Expects JSON payload:
+    {
+        "message": "Your message here",
+        "user_id": "optional_user_identifier",
+        "context": "optional_additional_context"
+    }
+    
+    Returns:
+    {
+        "status": "success",
+        "message": "user_message",
+        "response": "agent_response",
+        "timestamp": "ISO_timestamp",
+        "conversation_id": "conversation_identifier"
+    }
     """
     try:
         # Get JSON data from request
@@ -24,171 +97,231 @@ def chat():
         # Validate input
         if not data or 'message' not in data:
             return jsonify({
-                'error': 'Missing required field: message'
+                'error': 'Missing required field: message',
+                'status': 'error'
             }), 400
         
-        user_message = data['message']
+        user_message = data['message'].strip()
+        user_id = data.get('user_id', 'anonymous')
+        context = data.get('context', '')
         
-        # TODO: Replace this with actual Agent Vish logic
-        # For now, this is a simple echo response
-        bot_response = f"Agent Vish received: {user_message}"
+        if not user_message:
+            return jsonify({
+                'error': 'Message cannot be empty',
+                'status': 'error'
+            }), 400
         
-        # Return bot response as JSON
+        # Process message with Agent Vish
+        try:
+            if hasattr(agent_vish, 'process_message'):
+                bot_response = agent_vish.process_message(user_message)
+            else:
+                # Fallback response
+                bot_response = f"Agent Vish received: {user_message}"
+        except Exception as e:
+            logger.error(f"Error processing message: {e}")
+            bot_response = "I'm experiencing some technical difficulties. Please try again later."
+        
+        # Create conversation entry
+        conversation_entry = {
+            'timestamp': datetime.now().isoformat(),
+            'user_id': user_id,
+            'message': user_message,
+            'response': bot_response,
+            'context': context
+        }
+        
+        # Add to conversation history (limit to last 100 entries)
+        conversation_history.append(conversation_entry)
+        if len(conversation_history) > 100:
+            conversation_history.pop(0)
+        
+        # Return successful response
         return jsonify({
             'status': 'success',
             'message': user_message,
-            'response': bot_response
+            'response': bot_response,
+            'timestamp': conversation_entry['timestamp'],
+            'conversation_id': len(conversation_history)
         }), 200
         
     except Exception as e:
+        logger.error(f"Chat endpoint error: {e}")
         return jsonify({
-            'error': str(e)
+            'error': f'An unexpected error occurred: {str(e)}',
+            'status': 'error'
         }), 500
 
-@app.route('/api/summarize_report', methods=['POST'])
-def summarize_report():
+@app.route('/skills', methods=['GET'])
+def get_skills():
     """
-    API endpoint to summarize uploaded CSV/Excel reports.
-    
-    Accepts:
-        - file: CSV or Excel file (multipart/form-data)
-        - Optional parameters in form data
+    Get list of available skills from Agent Vish
     
     Returns:
-        JSON object containing:
-        - summary: Statistical summary of the data
-        - recommendations: AI-generated recommendations based on data analysis
-        - status: success or error
-    
-    Example Usage:
-        curl -X POST http://localhost:5000/api/summarize_report \
-             -F "file=@report.csv"
-    
-    Response Format:
-        {
-            "status": "success",
-            "summary": {
-                "total_rows": 100,
-                "total_columns": 5,
-                "column_info": {...},
-                "statistics": {...}
-            },
-            "recommendations": [
-                "Recommendation 1",
-                "Recommendation 2"
-            ]
-        }
+    {
+        "status": "success",
+        "skills": ["skill1", "skill2", ...],
+        "count": number_of_skills
+    }
     """
     try:
-        # Check if file is present in request
-        if 'file' not in request.files:
-            return jsonify({
-                'status': 'error',
-                'error': 'No file provided. Please upload a CSV or Excel file.'
-            }), 400
-        
-        file = request.files['file']
-        
-        # Check if filename is empty
-        if file.filename == '':
-            return jsonify({
-                'status': 'error',
-                'error': 'No file selected'
-            }), 400
-        
-        # Get file extension
-        file_extension = os.path.splitext(file.filename)[1].lower()
-        
-        # Read file based on extension
-        try:
-            file_content = file.read()
-            file_stream = io.BytesIO(file_content)
-            
-            if file_extension == '.csv':
-                df = pd.read_csv(file_stream)
-            elif file_extension in ['.xlsx', '.xls']:
-                df = pd.read_excel(file_stream)
-            else:
-                return jsonify({
-                    'status': 'error',
-                    'error': f'Unsupported file format: {file_extension}. Please upload CSV or Excel files.'
-                }), 400
-        except Exception as e:
-            return jsonify({
-                'status': 'error',
-                'error': f'Error reading file: {str(e)}'
-            }), 400
-        
-        # Process with report_skill if available
-        if report_skill:
-            result = report_skill(df)
+        if hasattr(agent_vish, 'get_available_skills'):
+            skills = agent_vish.get_available_skills()
         else:
-            # Fallback: Generate basic summary if report_skill is not available
-            result = generate_basic_summary(df)
+            # Default skills if method doesn't exist
+            skills = ["conversation", "analysis", "help", "general_assistance"]
         
         return jsonify({
             'status': 'success',
-            'summary': result.get('summary', {}),
-            'recommendations': result.get('recommendations', [])
+            'skills': skills,
+            'count': len(skills),
+            'description': 'Available skills for Agent Vish'
         }), 200
         
     except Exception as e:
+        logger.error(f"Skills endpoint error: {e}")
         return jsonify({
-            'status': 'error',
-            'error': f'An unexpected error occurred: {str(e)}'
+            'error': f'Error retrieving skills: {str(e)}',
+            'status': 'error'
         }), 500
 
-def generate_basic_summary(df):
+@app.route('/conversation', methods=['GET'])
+def get_conversation():
     """
-    Generate a basic summary of the dataframe when report_skill is not available.
+    Get conversation history
     
-    Args:
-        df: pandas DataFrame
+    Query parameters:
+    - limit: Maximum number of entries to return (default: 50)
+    - user_id: Filter by specific user ID
     
     Returns:
-        dict: Summary and recommendations
+    {
+        "status": "success",
+        "conversations": [...],
+        "total": total_count,
+        "returned": returned_count
+    }
     """
-    summary = {
-        'total_rows': len(df),
-        'total_columns': len(df.columns),
-        'columns': list(df.columns),
-        'column_types': df.dtypes.astype(str).to_dict(),
-        'missing_values': df.isnull().sum().to_dict(),
-        'statistics': {}
+    try:
+        limit = int(request.args.get('limit', 50))
+        user_id = request.args.get('user_id')
+        
+        # Filter conversations
+        filtered_conversations = conversation_history
+        if user_id:
+            filtered_conversations = [
+                conv for conv in conversation_history 
+                if conv.get('user_id') == user_id
+            ]
+        
+        # Apply limit
+        returned_conversations = filtered_conversations[-limit:] if limit > 0 else filtered_conversations
+        
+        return jsonify({
+            'status': 'success',
+            'conversations': returned_conversations,
+            'total': len(filtered_conversations),
+            'returned': len(returned_conversations)
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Conversation endpoint error: {e}")
+        return jsonify({
+            'error': f'Error retrieving conversations: {str(e)}',
+            'status': 'error'
+        }), 500
+
+@app.route('/conversation/clear', methods=['POST'])
+def clear_conversation():
+    """
+    Clear conversation history
+    
+    Optional JSON payload:
+    {
+        "user_id": "specific_user_to_clear"
     }
     
-    # Add statistics for numeric columns
-    numeric_columns = df.select_dtypes(include=['number']).columns
-    if len(numeric_columns) > 0:
-        summary['statistics'] = df[numeric_columns].describe().to_dict()
-    
-    # Generate basic recommendations
-    recommendations = []
-    
-    # Check for missing values
-    missing_count = df.isnull().sum().sum()
-    if missing_count > 0:
-        recommendations.append(f"Dataset contains {missing_count} missing values. Consider data cleaning or imputation.")
-    
-    # Check for numeric columns
-    if len(numeric_columns) > 0:
-        recommendations.append(f"Dataset has {len(numeric_columns)} numeric columns suitable for statistical analysis.")
-    
-    # Check dataset size
-    if len(df) < 30:
-        recommendations.append("Small dataset size. Results may have limited statistical significance.")
-    elif len(df) > 10000:
-        recommendations.append("Large dataset detected. Consider sampling for faster exploratory analysis.")
-    
-    # Check for potential duplicates
-    duplicate_count = df.duplicated().sum()
-    if duplicate_count > 0:
-        recommendations.append(f"Found {duplicate_count} duplicate rows. Consider removing duplicates if appropriate.")
-    
-    return {
-        'summary': summary,
-        'recommendations': recommendations
+    Returns:
+    {
+        "status": "success",
+        "message": "Conversation history cleared",
+        "cleared_count": number_of_entries_cleared
     }
+    """
+    try:
+        global conversation_history
+        
+        data = request.get_json() or {}
+        user_id = data.get('user_id')
+        
+        if user_id:
+            # Clear specific user's conversation
+            initial_count = len(conversation_history)
+            conversation_history = [
+                conv for conv in conversation_history 
+                if conv.get('user_id') != user_id
+            ]
+            cleared_count = initial_count - len(conversation_history)
+            message = f"Cleared conversation history for user: {user_id}"
+        else:
+            # Clear all conversations
+            cleared_count = len(conversation_history)
+            conversation_history = []
+            message = "Cleared all conversation history"
+        
+        return jsonify({
+            'status': 'success',
+            'message': message,
+            'cleared_count': cleared_count
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Clear conversation endpoint error: {e}")
+        return jsonify({
+            'error': f'Error clearing conversations: {str(e)}',
+            'status': 'error'
+        }), 500
+
+# Error handlers
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        'error': 'Endpoint not found',
+        'status': 'error',
+        'code': 404
+    }), 404
+
+@app.errorhandler(405)
+def method_not_allowed(error):
+    return jsonify({
+        'error': 'Method not allowed',
+        'status': 'error',
+        'code': 405
+    }), 405
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    return jsonify({
+        'error': 'Internal server error',
+        'status': 'error',
+        'code': 500
+    }), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Get port from environment variable or default to 5000
+    port = int(os.environ.get('PORT', 5000))
+    
+    # Get debug mode from environment variable
+    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    
+    logger.info(f"Starting Agent Vish API on port {port}")
+    logger.info(f"Debug mode: {debug_mode}")
+    logger.info(f"Available endpoints: /, /health, /chat, /skills, /conversation")
+    
+    # Run the Flask app
+    app.run(
+        debug=debug_mode,
+        host='0.0.0.0',
+        port=port,
+        threaded=True
+    )
