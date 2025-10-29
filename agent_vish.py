@@ -1,7 +1,7 @@
-# vishal_ai_bot.py
+# agent_vish.py
 class AgenticAIBot:
     
-    def __init__(self, name="Vishal AI Bot"):
+    def __init__(self, name="Agent Vish"):
         self.name = name
         self.skills = []
         self.memory = {}
