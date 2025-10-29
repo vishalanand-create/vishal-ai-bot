@@ -53,3 +53,173 @@ def about_me_skill(message, memory):
     # Continue with existing logic if no pattern matches
     # (existing logic would continue here)
     return None
+
+def insight_skill(message, memory):
+    """
+    Advanced skill function that delivers strategic, analytical, and actionable insights
+    based on business growth, retention, leadership, career development, and performance analytics.
+    Draws from real data and professional experience to provide consultative guidance.
+    """
+    
+    insight_patterns = {
+        "business growth": {
+            "keywords": ["business growth", "revenue growth", "scaling business", "expand business", "growth strategy"],
+            "insight": """Strategic Business Growth Framework:
+            
+1. CUSTOMER-CENTRIC GROWTH: Focus on deepening existing relationships before aggressive acquisition. In my experience, a 20% increase in customer retention can drive 95% increase in profitability. Implement quarterly business reviews with key accounts to identify expansion opportunities.
+
+2. DATA-DRIVEN DECISION MAKING: Leverage analytics to identify high-value customer segments. I've seen companies achieve 3x ROI by targeting the right customer profiles with personalized solutions rather than broad-based marketing.
+
+3. PRODUCT-LED GROWTH: Build features that naturally encourage expansion. Create value that makes customers want to upgrade. In previous roles, I've driven 40% YoY growth by aligning product roadmaps with customer success metrics.
+
+4. STRATEGIC PARTNERSHIPS: Identify complementary service providers for co-selling opportunities. This can reduce customer acquisition costs by 60% while expanding market reach.
+
+5. OPERATIONAL EXCELLENCE: Growth without scalable operations leads to churn. Invest in automation and process optimization early. Every dollar saved in operations can be reinvested in growth initiatives."""
+        },
+        
+        "retention strategy": {
+            "keywords": ["retention", "customer retention", "reduce churn", "keep customers", "customer loyalty"],
+            "insight": """Customer Retention Excellence Framework:
+
+1. PROACTIVE ENGAGEMENT: Don't wait for problems. Implement health score monitoring and reach out to at-risk accounts before they churn. I've reduced churn by 35% through proactive customer success programs.
+
+2. VALUE REALIZATION TRACKING: Ensure customers achieve measurable ROI within 90 days. Document success metrics and communicate wins regularly. Customers who see value early stay longer.
+
+3. EXECUTIVE SPONSORSHIP: Assign senior leaders to strategic accounts. This demonstrates commitment and enables faster issue resolution. Executive relationships are sticky.
+
+4. CONTINUOUS EDUCATION: Invest in customer training and enablement. Power users become advocates. Create certification programs and user communities.
+
+5. FEEDBACK LOOPS: Implement structured feedback mechanisms and act on insights. Customers who feel heard are more loyal. I've seen Net Promoter Scores improve by 25+ points through systematic feedback implementation.
+
+6. RENEWAL STRATEGY: Start renewal conversations 180 days early, not 30 days. Use the time to ensure adoption, address concerns, and identify expansion opportunities."""
+        },
+        
+        "leadership development": {
+            "keywords": ["leadership development", "develop leaders", "leadership skills", "becoming a leader", "lead team"],
+            "insight": """Leadership Development Blueprint:
+
+1. SELF-AWARENESS: Start with understanding your leadership style and blind spots. Seek 360-degree feedback regularly. The best leaders are self-reflective and continuously improving.
+
+2. PEOPLE INVESTMENT: Dedicate 40% of your time to coaching and developing others. Your success as a leader is measured by your team's growth. Create individual development plans for each team member.
+
+3. DECISION-MAKING FRAMEWORK: Develop a consistent approach to decisions. Be transparent about the reasoning. This builds trust and helps your team make better decisions independently.
+
+4. COMMUNICATION EXCELLENCE: Over-communicate vision and context. Repeat key messages. Ensure every team member understands how their work connects to broader goals.
+
+5. VULNERABILITY AND AUTHENTICITY: Admit mistakes and share lessons learned. This creates psychological safety and encourages innovation. Teams perform best when they feel safe taking calculated risks.
+
+6. STRATEGIC THINKING: Balance short-term execution with long-term vision. Allocate time for strategic planning, not just operational firefighting.
+
+7. CONFLICT RESOLUTION: Address issues directly and promptly. Unresolved conflicts compound. Approach disagreements as problem-solving opportunities."""
+        },
+        
+        "career advancement": {
+            "keywords": ["career growth", "career advancement", "promotion", "next level", "career development"],
+            "insight": """Career Advancement Strategy:
+
+1. OPERATE AT NEXT LEVEL: Start performing at the level above your current role 6-12 months before expecting promotion. Make yourself the obvious choice.
+
+2. VISIBILITY WITH IMPACT: Ensure your work is visible to decision-makers, but focus on impact over optics. Document achievements with quantifiable metrics.
+
+3. STRATEGIC NETWORKING: Build relationships across the organization. Understand the business beyond your function. Cross-functional influence accelerates advancement.
+
+4. SKILL DIVERSIFICATION: Develop T-shaped expertise - deep in your domain plus broad business acumen. Technical excellence alone isn't enough for senior roles.
+
+5. MENTORSHIP LEVERAGE: Find mentors at 2-3 levels above you. Learn from their experiences. Be specific about what guidance you need.
+
+6. VALUE CREATION: Focus on business outcomes, not just task completion. Solve problems that matter to the organization's strategic objectives.
+
+7. COMMUNICATION SKILLS: Develop executive presence and the ability to influence without authority. Senior roles require persuasion and stakeholder management.
+
+8. PATIENCE WITH PERSISTENCE: Career growth isn't linear. Stay patient but persistent. If growth stalls, be willing to make strategic lateral moves or external moves."""
+        },
+        
+        "performance analytics": {
+            "keywords": ["performance metrics", "kpi", "analytics", "measure performance", "track metrics"],
+            "insight": """Performance Analytics Framework:
+
+1. MEANINGFUL METRICS: Focus on metrics that drive behavior and outcomes. Avoid vanity metrics. Ask: 'If this improves, does the business improve?'
+
+2. LEADING VS LAGGING: Balance leading indicators (predictive) with lagging indicators (historical). Leading indicators enable proactive management.
+
+3. METRIC HIERARCHY: Establish clear connections between team metrics and company objectives. Every metric should ladder up to business impact.
+
+4. ACTIONABILITY: Metrics are useless without action. Create clear thresholds and response plans for when metrics hit certain levels.
+
+5. BENCHMARKING: Compare performance against industry standards and internal trends. Context matters more than absolute numbers.
+
+6. SEGMENTATION: Analyze metrics by customer segment, product line, and time period. Aggregated data can hide important insights.
+
+7. QUALITATIVE + QUANTITATIVE: Numbers tell you what's happening; conversations tell you why. Combine data analytics with customer feedback.
+
+8. REPORTING CADENCE: Match reporting frequency to decision-making needs. Real-time dashboards for operational metrics, monthly reviews for strategic metrics.
+
+9. DATA QUALITY: Invest in data accuracy and consistency. Poor data leads to poor decisions. Audit data sources regularly."""
+        },
+        
+        "team productivity": {
+            "keywords": ["productivity", "team efficiency", "improve performance", "team effectiveness"],
+            "insight": """Team Productivity Optimization:
+
+1. CLARITY OF PURPOSE: Ensure every team member understands priorities and how success is measured. Ambiguity kills productivity.
+
+2. REMOVE BLOCKERS: Your primary job as a leader is removing obstacles. Hold regular blocker reviews and act quickly.
+
+3. MEETING HYGIENE: Reduce meeting overhead by 30-40%. Every meeting needs a clear purpose, agenda, and owner. Default to 25-minute meetings.
+
+4. DEEP WORK TIME: Protect blocks of uninterrupted focus time. Some of the best work happens in 2-4 hour deep work sessions.
+
+5. TOOLING INVESTMENT: Invest in tools that automate repetitive tasks. The ROI on good tooling is often 10x within months.
+
+6. SKILL MATCHING: Align tasks with people's strengths while creating growth opportunities. Flow state drives productivity.
+
+7. FEEDBACK VELOCITY: Implement quick feedback loops. Waiting days for reviews kills momentum. Aim for same-day feedback on critical work.
+
+8. CELEBRATE WINS: Recognition drives engagement and productivity. Make wins visible across the team."""
+        },
+        
+        "strategic planning": {
+            "keywords": ["strategic planning", "strategy", "roadmap", "long term planning", "strategic initiatives"],
+            "insight": """Strategic Planning Excellence:
+
+1. VISION CLARITY: Start with a compelling vision that answers 'why this matters.' Strategy without purpose is just a list of tasks.
+
+2. RESOURCE REALISM: Be honest about capacity and constraints. Overcommitting guarantees underdelivering.
+
+3. PRIORITIZATION FRAMEWORK: Use frameworks like RICE (Reach, Impact, Confidence, Effort) to make priority decisions transparent and consistent.
+
+4. QUARTERLY PLANNING: Balance annual strategy with quarterly execution plans. Markets change too fast for rigid annual plans.
+
+5. STAKEHOLDER ALIGNMENT: Invest time upfront in alignment. Misalignment discovered during execution is expensive.
+
+6. MEASURABLE OUTCOMES: Define success metrics before starting. What does 'done' look like? How will we know if it worked?
+
+7. RISK MITIGATION: Identify risks early and develop contingency plans. Hope is not a strategy.
+
+8. REGULAR REVIEWS: Strategy is dynamic. Review quarterly and adjust based on learnings. Stubbornly sticking to a failing strategy is worse than pivoting.
+
+9. COMMUNICATION RHYTHM: Communicate strategy repeatedly through multiple channels. Assume people need to hear it 7 times before it sinks in."""
+        }
+    }
+    
+    message_lower = message.lower()
+    
+    # Check for insight pattern matches
+    for insight_topic, data in insight_patterns.items():
+        for keyword in data["keywords"]:
+            if keyword in message_lower:
+                return data["insight"]
+    
+    return None
+
+# Initialize bot and register all skills
+if __name__ == "__main__":
+    bot = AgenticAIBot()
+    bot.add_skill(greet_skill)
+    bot.add_skill(faq_skill)
+    bot.add_skill(about_me_skill)
+    bot.add_skill(insight_skill)  # Register the new insight_skill
+    
+    # Test the bot
+    print(bot.receive_message("Hello"))
+    print(bot.receive_message("Tell me about business growth"))
