@@ -55,42 +55,39 @@ def greet_skill(message, memory):
     msg_lower = message.lower()
     greetings = ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening']
     if any(greeting in msg_lower for greeting in greetings):
-        return f"Hello! I'm Agent Vish. How can I assist you today?"
+        return "Hello! I'm Agent Vish, here to help you. How can I assist you today?"
 
 def faq_skill(message, memory):
-    if "how are you" in message.lower():
-        return "I'm functioning perfectly, thanks for asking! Ready to assist you."
+    msg_lower = message.lower()
+    if 'what can you do' in msg_lower or 'capabilities' in msg_lower:
+        return "I can help you with analytics, reports, insights, and answer questions about my creator, Vishal Anand!"
 
 def about_me_skill(message, memory):
     msg_lower = message.lower()
     
     about_phrases = [
+        'about you',
         'who are you',
         'tell me about yourself',
-        'about you',
-        'what are you',
-        'introduce yourself'
+        'what is your purpose',
+        'introduce yourself',
+        'yourself'
     ]
     
     if any(phrase in msg_lower for phrase in about_phrases):
         return (
-            "I am Agent Vish, an AI assistant built for Vishal Anand, Account Manager, automation expert, content creator, and strategist. "
-            "Vishal Anand works at MyOperator, pursues an MBA in Digital Marketing, and has experience in client relations, WhatsApp bots, analytics, business planning, and API integration. "
-            "You can ask me about Vishal's interests, expertise, or professional work."
+            "Absolutely! I'm Agent Vish, your AI assistant dedicated to Vishal Anand. "
+            "Vishal is a Customer Success Team Lead with 5+ years experience across client management, renewals, upselling, escalations, and team leadership. "
+            "At MyOperator, he's led a team of 4 AMs and 30 cross-functional partners to deliver record upgrades and retention—think 6.5M upgrades/year, 80+ renewals/month, and top scores on CSAT and NPS. "
+            "Vishal is known for coaching, escalation management, driving adoption, building dashboards, and process improvement. "
+            "He's also skilled with WhatsApp Business API, Salesforce, HubSpot, Zoho, Excel, and all things customer lifecycle. "
+            "You can ask me about Vishal's expertise in SaaS customer success, business analytics, operations, playbooks, or career highlights!"
         )
 
 def insight_skill(message, memory):
     msg_lower = message.lower()
     
-    insight_phrases = [
-        'what can you tell me',
-        'insight',
-        'give me insight',
-        'provide insight',
-        'tell me more'
-    ]
-    
-    if any(phrase in msg_lower for phrase in insight_phrases):
+    if 'insight' in msg_lower or 'analysis' in msg_lower:
         return (
             "I can provide insights on various topics related to AI, automation, business analytics, and more. "
             "What specific area would you like to know more about?"
@@ -115,9 +112,12 @@ def knowledge_skill(message, memory):
     
     if any(phrase in msg_lower for phrase in knowledge_phrases):
         return (
-            "I am Agent Vish, an AI assistant built for Vishal Anand, Account Manager, automation expert, content creator, and strategist. "
-            "Vishal Anand works at MyOperator, pursues an MBA in Digital Marketing, and has experience in client relations, WhatsApp bots, analytics, business planning, and API integration. "
-            "You can ask me about Vishal's interests, expertise, or professional work."
+            "Absolutely! I'm Agent Vish, your AI assistant dedicated to Vishal Anand. "
+            "Vishal is a Customer Success Team Lead with 5+ years experience across client management, renewals, upselling, escalations, and team leadership. "
+            "At MyOperator, he's led a team of 4 AMs and 30 cross-functional partners to deliver record upgrades and retention—think 6.5M upgrades/year, 80+ renewals/month, and top scores on CSAT and NPS. "
+            "Vishal is known for coaching, escalation management, driving adoption, building dashboards, and process improvement. "
+            "He's also skilled with WhatsApp Business API, Salesforce, HubSpot, Zoho, Excel, and all things customer lifecycle. "
+            "You can ask me about Vishal's expertise in SaaS customer success, business analytics, operations, playbooks, or career highlights!"
         )
 
 def upsell_skill(message, memory):
