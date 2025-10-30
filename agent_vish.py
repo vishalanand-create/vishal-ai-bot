@@ -161,3 +161,8 @@ def analyze_performance(data: Dict[str, Any]) -> str:
     """Module-level function for backwards compatibility."""
     agent = AgentVish()
     return agent.analyze_performance(data)
+
+def receive_message(msg: str) -> str:
+    """Module-level function for backwards compatibility."""
+    agent = AgentVish()
+    return agent.receive_message(msg)
