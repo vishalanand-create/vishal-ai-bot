@@ -58,12 +58,11 @@ def debug_summary(info: Any) -> str:
         s = s[:177] + "..."
     return f"{DEBUG_SUMMARY_PREFIX}{s}"
 
-# Main Agent Class
 class AgentVish:
-    """Main agent class that handles intent routing and responses."""
-    
+    """Main agent class for Vishal's bot."""
+
     def __init__(self):
-        # Router for intents -> single line responses
+        # Intents map to response constants
         self.intents: Dict[str, Callable[[], str]] = {
             "bio": lambda: single_line(BIO),
             "skills": lambda: single_line(SKILLS),
@@ -72,9 +71,10 @@ class AgentVish:
             "help": lambda: single_line(HELP),
             "fallback": lambda: single_line(FALLBACK),
         }
-    
+
     def receive_message(self, msg: str) -> str:
-        """Receive user input and route to appropriate intent handler.
+        """
+        Process incoming messages and route to correct intent.
         
         Args:
             msg: User input text
@@ -89,7 +89,22 @@ class AgentVish:
         msg_lower = msg.lower().strip()
         
         # Intent keyword matching
-        if any(kw in msg_lower for kw in ["bio", "about", "who", "vishal"]):
+        # Analytics intent - route to analytics_skill
+        if any(kw in msg_lower for kw in ["analytics", "google analytics", "sheets", "myoperator"]):
+            try:
+                result = analytics_skill(msg)
+                result_str = str(result) if result else "No analytics data available."
+                # Truncate to 250 chars if needed
+                if len(result_str) > 250:
+                    result_str = result_str[:247] + "..."
+                return single_line(result_str)
+            except Exception as e:
+                logger.exception("Analytics skill failed")
+                error_msg = f"Analytics error: {str(e)}"
+                if len(error_msg) > 250:
+                    error_msg = error_msg[:247] + "..."
+                return single_line(error_msg)
+        elif any(kw in msg_lower for kw in ["bio", "about", "who", "vishal"]):
             intent = "bio"
         elif any(kw in msg_lower for kw in ["skill", "expertise", "experience"]):
             intent = "skills"
