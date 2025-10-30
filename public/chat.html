@@ -63,51 +63,49 @@
             justify-content: flex-end;
         }
         
-        .message.bot {
-            justify-content: flex-start;
-        }
-        
         .message-content {
             max-width: 70%;
             padding: 12px 16px;
-            border-radius: 18px;
+            border-radius: 15px;
             word-wrap: break-word;
         }
         
         .message.user .message-content {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            border-bottom-right-radius: 5px;
         }
         
         .message.bot .message-content {
             background: white;
             color: #333;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 5px;
         }
         
         .chat-input-container {
-            display: flex;
             padding: 20px;
             background: white;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
         }
         
-        #userInput {
+        #user-input {
             flex: 1;
-            padding: 12px;
-            border: 2px solid #ddd;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
             border-radius: 25px;
             font-size: 14px;
             outline: none;
             transition: border-color 0.3s;
         }
         
-        #userInput:focus {
+        #user-input:focus {
             border-color: #667eea;
         }
         
-        #sendButton {
-            margin-left: 10px;
+        #send-button {
             padding: 12px 30px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -116,35 +114,35 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: bold;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
         
-        #sendButton:hover:not(:disabled) {
-            transform: scale(1.05);
+        #send-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         
-        #sendButton:disabled {
+        #send-button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
         
         .typing-indicator {
             display: flex;
-            align-items: center;
-            padding: 10px 16px;
+            gap: 5px;
+            padding: 12px 16px;
             background: white;
-            border-radius: 18px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+            border-radius: 15px;
             width: fit-content;
+            border-bottom-left-radius: 5px;
         }
         
         .typing-indicator span {
-            height: 8px;
             width: 8px;
+            height: 8px;
             background: #667eea;
             border-radius: 50%;
-            display: inline-block;
-            margin: 0 2px;
             animation: typing 1.4s infinite;
         }
         
@@ -167,24 +165,25 @@
         <div class="chat-header">
             🤖 Agent Vish
         </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot">
-                <div class="message-content">
-                    Hello! I'm Agent Vish, your AI assistant. How can I help you today?
-                </div>
-            </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will appear here -->
         </div>
         <div class="chat-input-container">
-            <input type="text" id="userInput" placeholder="Type your message..." />
-            <button id="sendButton">Send</button>
+            <input type="text" id="user-input" placeholder="Type your message..." />
+            <button id="send-button">Send</button>
         </div>
     </div>
 
     <script>
-        const chatMessages = document.getElementById('chatMessages');
-        const userInput = document.getElementById('userInput');
-        const sendButton = document.getElementById('sendButton');
-        const API_ENDPOINT = '/api/chat';
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        
+        // Update API endpoint to /chat
+        const API_ENDPOINT = '/chat';
+        
+        // Add welcome message
+        addMessage('Hello! I\'m Agent Vish. How can I help you today?', false);
         
         function addMessage(text, isUser) {
             const messageDiv = document.createElement('div');
@@ -196,13 +195,15 @@
             
             messageDiv.appendChild(contentDiv);
             chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
         
-        function showTypingIndicator() {
+        function addTypingIndicator() {
             const typingDiv = document.createElement('div');
             typingDiv.className = 'message bot';
-            typingDiv.id = 'typingIndicator';
+            typingDiv.id = 'typing-indicator';
             
             const indicatorDiv = document.createElement('div');
             indicatorDiv.className = 'typing-indicator';
@@ -214,9 +215,9 @@
         }
         
         function removeTypingIndicator() {
-            const typingIndicator = document.getElementById('typingIndicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
             }
         }
         
@@ -224,18 +225,19 @@
             const message = userInput.value.trim();
             if (!message) return;
             
-            // Add user message
-            addMessage(message, true);
-            userInput.value = '';
-            
             // Disable input while processing
             sendButton.disabled = true;
             userInput.disabled = true;
             
+            // Add user message
+            addMessage(message, true);
+            userInput.value = '';
+            
             // Show typing indicator
-            showTypingIndicator();
+            addTypingIndicator();
             
             try {
+                console.log('Sending message:', message);
                 const response = await fetch(API_ENDPOINT, {
                     method: 'POST',
                     headers: {
@@ -264,7 +266,7 @@
                 removeTypingIndicator();
                 
                 // Use data.reply to match backend response format
-                const botReply = data.reply || data.response || 'Sorry, I could not process that.';
+                const botReply = data.reply || data.response || data.message;
                 addMessage(botReply, false);
                 
             } catch (error) {
