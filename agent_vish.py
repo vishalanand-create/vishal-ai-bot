@@ -54,72 +54,51 @@ class AgenticAIBot:
 def greet_skill(message, memory):
     msg_lower = message.lower()
     greetings = ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening']
-    
-    if any(greet in msg_lower for greet in greetings):
-        return "Hello! I'm Agent Vish. How can I assist you today?"
+    if any(greeting in msg_lower for greeting in greetings):
+        return f"Hello! I'm Agent Vish. How can I assist you today?"
 
 def faq_skill(message, memory):
-    msg_lower = message.lower()
-    
-    if 'help' in msg_lower or 'faq' in msg_lower or 'question' in msg_lower:
-        return "Here are some things I can help with: greetings, analytics, reports, and general questions!"
+    if "how are you" in message.lower():
+        return "I'm functioning perfectly, thanks for asking! Ready to assist you."
 
 def about_me_skill(message, memory):
     msg_lower = message.lower()
     
-    phrases = [
+    about_phrases = [
         'who are you',
-        'what are you',
-        'tell me about you',
+        'tell me about yourself',
         'about you',
-        'introduce yourself',
-        'name please',
-        'who r u'
+        'what are you',
+        'introduce yourself'
     ]
     
-    if any(phrase in msg_lower for phrase in phrases):
-        return "I am Agent Vish, your AI assistant."
-    
-    # Fallback to substring match for 'about'
-    if 'about' in msg_lower:
-        return "I am Agent Vish, your AI assistant."
+    if any(phrase in msg_lower for phrase in about_phrases):
+        return (
+            "I am Agent Vish, an AI assistant built for Vishal Anand, Account Manager, automation expert, content creator, and strategist. "
+            "Vishal Anand works at MyOperator, pursues an MBA in Digital Marketing, and has experience in client relations, WhatsApp bots, analytics, business planning, and API integration. "
+            "You can ask me about Vishal's interests, expertise, or professional work."
+        )
 
 def insight_skill(message, memory):
     msg_lower = message.lower()
     
-    # Check for natural language variations asking about skills/capabilities
-    skill_phrases = [
-        'skill',
-        'skills',
-        "what's your skill",
-        'what are your skills',
-        'your skills',
-        'abilities',
-        'what can you do',
-        'what are you good at',
-        'capabilities',
-        'your capabilities',
-        'what do you do',
-        'tell me your skills',
-        'list your skills',
-        'what are your abilities',
-        'show me your skills',
-        'your capability',
-        'what can you help with',
-        'what do you know',
-        'insight'
+    insight_phrases = [
+        'what can you tell me',
+        'insight',
+        'give me insight',
+        'provide insight',
+        'tell me more'
     ]
     
-    if any(phrase in msg_lower for phrase in skill_phrases):
+    if any(phrase in msg_lower for phrase in insight_phrases):
         return (
-            "I'm Agent Vish, and here's what I can do for you:\n"
-            "✨ Greet and chat with you\n"
-            "📊 Provide analytics and insights\n"
-            "📝 Generate reports\n"
-            "❓ Answer FAQs\n"
-            "💬 Have natural conversations\n"
-            "Feel free to ask me anything!"
+            "I can provide insights on various topics related to AI, automation, business analytics, and more. "
+            "What specific area would you like to know more about?"
         )
+
+def report_skill(message, memory):
+    if "report" in message.lower():
+        return "Generating report for you..."
 
 def knowledge_skill(message, memory):
     msg_lower = message.lower()
@@ -136,13 +115,9 @@ def knowledge_skill(message, memory):
     
     if any(phrase in msg_lower for phrase in knowledge_phrases):
         return (
-            "I have expertise in:\n"
-            "🤖 Conversational AI and natural language understanding\n"
-            "📈 Analytics and data insights\n"
-            "📊 Report generation and summarization\n"
-            "💼 Business automation and workflow assistance\n"
-            "🔍 Information retrieval and FAQ handling\n"
-            "I'm continuously learning to serve you better!"
+            "I am Agent Vish, an AI assistant built for Vishal Anand, Account Manager, automation expert, content creator, and strategist. "
+            "Vishal Anand works at MyOperator, pursues an MBA in Digital Marketing, and has experience in client relations, WhatsApp bots, analytics, business planning, and API integration. "
+            "You can ask me about Vishal's interests, expertise, or professional work."
         )
 
 def upsell_skill(message, memory):
@@ -167,10 +142,6 @@ def upsell_skill(message, memory):
             "💬 Engage customers with targeted messaging at the right time\n"
             "Let me know if you'd like to explore specific upselling strategies!"
         )
-
-def report_skill(message, memory):
-    if "report" in message.lower():
-        return "Generating report for you..."
 
 # Main entry point
 if __name__ == "__main__":
