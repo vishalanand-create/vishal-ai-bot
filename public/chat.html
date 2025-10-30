@@ -1,352 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agent Vish Chat</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .chat-container {
-            width: 90%;
-            max-width: 600px;
-            height: 80vh;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        
-        .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-        
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        
-        .message {
-            margin-bottom: 15px;
-            animation: fadeIn 0.3s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .user-message {
-            text-align: right;
-        }
-        
-        .bot-message {
-            text-align: left;
-        }
-        
-        .message-content {
-            display: inline-block;
-            padding: 12px 18px;
-            border-radius: 18px;
-            max-width: 70%;
-            word-wrap: break-word;
-        }
-        
-        .user-message .message-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .bot-message .message-content {
-            background: white;
-            color: #333;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .quick-replies {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-            justify-content: flex-start;
-        }
-        
-        .quick-reply-btn {
-            background: white;
-            border: 2px solid #667eea;
-            color: #667eea;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.3s ease;
-        }
-        
-        .quick-reply-btn:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
-        }
-        
-        .chat-input-container {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            gap: 10px;
-        }
-        
-        #userInput {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 1em;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-        
-        #userInput:focus {
-            border-color: #667eea;
-        }
-        
-        #sendBtn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: transform 0.3s ease;
-        }
-        
-        #sendBtn:hover {
-            transform: scale(1.05);
-        }
-        
-        .typing-indicator {
-            display: inline-block;
-            padding: 12px 18px;
-            background: white;
-            border-radius: 18px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .typing-indicator span {
-            height: 8px;
-            width: 8px;
-            background: #667eea;
-            border-radius: 50%;
-            display: inline-block;
-            margin: 0 2px;
-            animation: bounce 1.4s infinite ease-in-out;
-        }
-        
-        .typing-indicator span:nth-child(1) {
-            animation-delay: -0.32s;
-        }
-        
-        .typing-indicator span:nth-child(2) {
-            animation-delay: -0.16s;
-        }
-        
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Vish Chat</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f6f8fb; color: #111; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 24px; }
+    .chat { background: #fff; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.06); overflow: hidden; }
+    .chat-header { padding: 16px 20px; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color: #fff; }
+    .chat-body { height: 60vh; overflow-y: auto; padding: 16px; }
+    .msg { margin: 10px 0; padding: 10px 12px; border-radius: 10px; max-width: 85%; line-height: 1.4; white-space: pre-wrap; word-wrap: break-word; }
+    .bot { background: #f1f5ff; color: #162466; border: 1px solid #e0e7ff; }
+    .user { background: #f6f7f9; border: 1px solid #eaecef; margin-left: auto; }
+    .chat-footer { display: flex; gap: 8px; padding: 12px; border-top: 1px solid #eef1f6; }
+    input[type=text] { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #cfd7e6; font-size: 16px; }
+    button { padding: 10px 14px; border-radius: 8px; border: 0; background: #667eea; color: #fff; cursor: pointer; }
+    button:disabled { opacity: .6; cursor: not-allowed; }
+    .error { color: #b00020; padding: 8px 12px; }
+    .quick { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 12px 0; }
+    .quick button { background: #eef2ff; color: #18224d; border: 1px solid #dfe4ff; }
+  </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            🤖 Agent Vish
-        </div>
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input-container">
-            <input type="text" id="userInput" placeholder="Type your message..." />
-            <button id="sendBtn">Send</button>
-        </div>
+  <div class="wrap">
+    <div class="chat">
+      <div class="chat-header"><strong>Agent Vish</strong> — Ask about Vishal, skills, projects, or features</div>
+      <div id="log" class="chat-body"></div>
+      <div class="quick">
+        <button data-q="about vishal">About</button>
+        <button data-q="core skills">Skills</button>
+        <button data-q="projects">Projects</button>
+        <button data-q="features">Features</button>
+        <button data-q="help">Help</button>
+      </div>
+      <div id="err" class="error" role="alert" aria-live="polite"></div>
+      <div class="chat-footer">
+        <input id="inp" type="text" placeholder="Type your message..." autocomplete="off" />
+        <button id="send">Send</button>
+      </div>
     </div>
+  </div>
+  <script>
+    const log = document.getElementById('log');
+    const inp = document.getElementById('inp');
+    const sendBtn = document.getElementById('send');
+    const errBox = document.getElementById('err');
 
-    <script>
-        const chatMessages = document.getElementById('chatMessages');
-        const userInput = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn');
+    const CONTROL = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g;
+    const EMOJI = /[\u{1F300}-\u{1FAFF}\u{1F600}-\u{1F64F}\u{2600}-\u{27BF}]/gu;
 
-        // Quick reply configurations
-        const quickReplyConfigs = {
-            'profile': ['Show skills', 'Show client wins', 'Show tools used', 'Show certifications'],
-            'skills': ['Learn more about Vishal', 'Show client wins', 'Show tools used', 'Show certifications'],
-            'client': ['Learn more about Vishal', 'Show skills', 'Show tools used', 'Show certifications'],
-            'tools': ['Learn more about Vishal', 'Show skills', 'Show client wins', 'Show certifications'],
-            'certifications': ['Learn more about Vishal', 'Show skills', 'Show client wins', 'Show tools used']
-        };
+    function sanitizeText(s) {
+      if (typeof s !== 'string') return '';
+      return s.replace(CONTROL, '').replace(EMOJI, '').trim();
+    }
 
-        // Initialize chat with welcome message
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                addBotMessage('Hi! I\'m Agent Vish, your AI assistant. How can I help you today?');
-                addQuickReplies(['Learn more about Vishal', 'Show skills', 'Show client wins', 'Show tools used', 'Show certifications']);
-            }, 500);
+    function addMsg(text, who = 'bot') {
+      const div = document.createElement('div');
+      div.className = `msg ${who}`;
+      div.textContent = text;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function showError(text) {
+      errBox.textContent = text || '';
+      if (text) console.error(text);
+    }
+
+    async function send(text) {
+      const clean = sanitizeText(text);
+      if (!clean) { showError('Please enter a valid message.'); return; }
+      showError('');
+      addMsg(clean, 'user');
+      inp.value = '';
+      sendBtn.disabled = true;
+      try {
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: clean })
         });
-
-        function addMessage(message, isUser) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            
-            const messageContent = document.createElement('div');
-            messageContent.className = 'message-content';
-            messageContent.textContent = message;
-            
-            messageDiv.appendChild(messageContent);
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function addBotMessage(message) {
-            addMessage(message, false);
-        }
-
-        function addUserMessage(message) {
-            addMessage(message, true);
-        }
-
-        function addQuickReplies(replies) {
-            const quickRepliesDiv = document.createElement('div');
-            quickRepliesDiv.className = 'message bot-message';
-            
-            const quickRepliesContainer = document.createElement('div');
-            quickRepliesContainer.className = 'quick-replies';
-            
-            replies.forEach(reply => {
-                const btn = document.createElement('button');
-                btn.className = 'quick-reply-btn';
-                btn.textContent = reply;
-                btn.onclick = () => handleQuickReply(reply);
-                quickRepliesContainer.appendChild(btn);
-            });
-            
-            quickRepliesDiv.appendChild(quickRepliesContainer);
-            chatMessages.appendChild(quickRepliesDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function handleQuickReply(reply) {
-            addUserMessage(reply);
-            processMessage(reply);
-        }
-
-        function showTypingIndicator() {
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message bot-message';
-            typingDiv.id = 'typing-indicator';
-            
-            const typingContent = document.createElement('div');
-            typingContent.className = 'typing-indicator';
-            typingContent.innerHTML = '<span></span><span></span><span></span>';
-            
-            typingDiv.appendChild(typingContent);
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const typingIndicator = document.getElementById('typing-indicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
+        const ct = res.headers.get('content-type') || '';
+        if (!res.ok) {
+          let errorText = `Error ${res.status}`;
+          if (ct.includes('application/json')) {
+            const data = await res.json().catch(() => ({}));
+            if (data && (data.message || data.error)) {
+              errorText += `: ${data.message || data.error}`;
             }
+          } else {
+            const t = await res.text();
+            if (t) errorText += `: ${t}`;
+          }
+          showError(errorText);
+          addMsg('Sorry, your request could not be processed.', 'bot');
+          return;
         }
-
-        async function processMessage(message) {
-            showTypingIndicator();
-            
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: message })
-                });
-
-                const data = await response.json();
-                removeTypingIndicator();
-                
-                if (data.response) {
-                    addBotMessage(data.response);
-                    
-                    // Determine which quick replies to show based on the message content
-                    let quickRepliesToShow = null;
-                    const lowerMessage = message.toLowerCase();
-                    
-                    if (lowerMessage.includes('vishal') || lowerMessage.includes('profile') || lowerMessage.includes('about')) {
-                        quickRepliesToShow = quickReplyConfigs['profile'];
-                    } else if (lowerMessage.includes('skill')) {
-                        quickRepliesToShow = quickReplyConfigs['skills'];
-                    } else if (lowerMessage.includes('client') || lowerMessage.includes('win')) {
-                        quickRepliesToShow = quickReplyConfigs['client'];
-                    } else if (lowerMessage.includes('tool')) {
-                        quickRepliesToShow = quickReplyConfigs['tools'];
-                    } else if (lowerMessage.includes('certification') || lowerMessage.includes('certificate')) {
-                        quickRepliesToShow = quickReplyConfigs['certifications'];
-                    }
-                    
-                    // Always show quick replies after main responses
-                    if (quickRepliesToShow) {
-                        addQuickReplies(quickRepliesToShow);
-                    }
-                } else {
-                    addBotMessage('Sorry, I encountered an error. Please try again.');
-                }
-            } catch (error) {
-                removeTypingIndicator();
-                addBotMessage('Sorry, I\'m having trouble connecting. Please try again later.');
-            }
+        const data = ct.includes('application/json') ? await res.json() : null;
+        if (data && data.ok && typeof data.message === 'string') {
+          addMsg(sanitizeText(data.message), 'bot');
+        } else {
+          addMsg('Unexpected response from server.', 'bot');
         }
+      } catch (e) {
+        showError('Network or server error. Please try again.');
+      } finally {
+        sendBtn.disabled = false;
+      }
+    }
 
-        sendBtn.addEventListener('click', () => {
-            const message = userInput.value.trim();
-            if (message) {
-                addUserMessage(message);
-                userInput.value = '';
-                processMessage(message);
-            }
-        });
+    sendBtn.addEventListener('click', () => send(inp.value));
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') send(inp.value);
+    });
+    document.querySelectorAll('.quick button').forEach(b => b.addEventListener('click', () => send(b.dataset.q)));
 
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const message = userInput.value.trim();
-                if (message) {
-                    addUserMessage(message);
-                    userInput.value = '';
-                    processMessage(message);
-                }
-            }
-        });
-    </script>
+    // Greet on load
+    addMsg('Hi, I\'m Agent Vish. Ask about Vishal, skills, projects, or features.');
+  </script>
 </body>
 </html>
