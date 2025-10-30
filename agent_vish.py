@@ -26,21 +26,27 @@ def clean_text(s: str) -> str:
 BIO = (
     "Vishal Anand: Customer Success Team Lead at MyOperator; renewals, client lifecycle, upsell, analytics, onboarding, escalation, leadership; keen on LLMs & agentic workflows. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
+
 SKILLS = (
     "Skills: Renewals, upsell/cross-sell, onboarding, client lifecycle, dashboarding, coaching, escalation, Salesforce, HubSpot, Zoho, WhatsApp API, Excel, analytics. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
+
 PROJECTS = (
     "Projects: Agent Vish bot, CS upgrades (6.5M/yr), dashboards, agentic tools. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
+
 FEATURES = (
     "Features: FAQ, analytics, project tracking, workflows. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
+
 HELP = (
     "Try: about vishal, skills, projects, or features. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
+
 FALLBACK = (
     "Try: about vishal, skills, projects, or features. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
+
 DEBUG_SUMMARY_PREFIX = "Debug: "
 
 # Response helpers to force single-line outputs everywhere
@@ -60,7 +66,7 @@ def debug_summary(info: Any) -> str:
 
 class AgentVish:
     """Main agent class for Vishal's bot."""
-
+    
     def __init__(self):
         # Intents map to response constants
         self.intents: Dict[str, Callable[[], str]] = {
@@ -71,7 +77,7 @@ class AgentVish:
             "help": lambda: single_line(HELP),
             "fallback": lambda: single_line(FALLBACK),
         }
-
+    
     def receive_message(self, msg: str) -> str:
         """
         Process incoming messages and route to correct intent.
@@ -117,7 +123,13 @@ class AgentVish:
         else:
             intent = "fallback"
         
-        return self.handle_intent(intent)
+        reply = self.handle_intent(intent)
+        
+        # Final fallback: ensure we never return empty
+        if not reply or not reply.strip():
+            return single_line(FALLBACK)
+        
+        return reply
     
     def handle_intent(self, intent: str, debug: Any | None = None) -> str:
         """Handle intent routing and return appropriate response."""
