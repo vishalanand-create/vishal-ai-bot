@@ -54,68 +54,53 @@ class AgenticAIBot:
 
 def greet_skill(message, memory):
     msg_lower = message.lower()
-    greetings = ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening']
-    if any(greeting in msg_lower for greeting in greetings):
+    
+    greet_phrases = [
+        'hi', 'hello', 'hey', 'greetings', 'good morning', 
+        'good afternoon', 'good evening', 'namaste', 'hola'
+    ]
+    
+    if any(phrase in msg_lower for phrase in greet_phrases):
         return "Hello! I'm Agent Vish, here to help you. How can I assist you today?"
 
 def faq_skill(message, memory):
     msg_lower = message.lower()
     
-    # Robust matching for 'how are you' and common variants
-    # Remove punctuation and normalize spaces
-    normalized_msg = re.sub(r'[^a-z0-9\s]', '', msg_lower).strip()
-    normalized_msg = re.sub(r'\s+', ' ', normalized_msg)  # Normalize multiple spaces
+    faqs = {
+        'what is your name': "Hey there! I'm Agent Vish, your personal AI assistant created for Vishal Anand. I'm here to share insights about Vishal's expertise in Customer Success, team leadership, client management, and SaaS operations. Whether you want to know about his renewals strategy, upselling approach, API integrations, reporting skills, or client wins—just ask! I can also help with analytics and business insights. How can I assist you today?",
+        'who are you': "I'm Agent Vish, an AI assistant representing Vishal Anand—a Customer Success Team Lead with expertise in renewals, upselling, onboarding, analytics, and SaaS operations.",
+        'how can you help': "I can share information about Vishal Anand's professional background, skills, client wins, and projects. I can also help with analytics and insights!"
+    }
     
-    # Check for 'how are you' variants
-    how_are_you_patterns = [
-        r'\bhow\s+(are|r)\s+(you|u|ya)\b',
-        r'\bhow\s+r\s+u\b',
-        r'\bhows\s+(you|u|ya)\b',
-        r'\bhow\s+are\s+ya\b',
-        r'\bhowareyou\b',
-        r'\bhowru\b',
-        r'\bhow\s+do\s+you\s+do\b'
-    ]
-    
-    if any(re.search(pattern, normalized_msg) for pattern in how_are_you_patterns):
-        return "I'm doing well, thanks for asking! How can I help you today?"
-    
-    # Existing FAQ patterns
-    if 'what can you do' in msg_lower or 'capabilities' in msg_lower:
-        return "I can help you with analytics, reports, insights, and answer questions about my creator, Vishal Anand!"
+    for question, answer in faqs.items():
+        if question in msg_lower:
+            return answer
 
 def about_me_skill(message, memory):
     msg_lower = message.lower()
     
     about_phrases = [
-        'about you',
-        'who are you',
-        'tell me about yourself',
-        'what is your purpose',
-        'introduce yourself',
-        'yourself',
-        'what is your name',
-        'your name',
-        "what's your name",
-        'whats your name'
+        'who is vishal anand',
+        'tell me about vishal',
+        'tell more about vishal',
+        'more about him',
+        'more about vishal',
+        'about vishal',
+        'what are his skills',
+        'his skills',
+        'vishal skills',
+        'tell more about him'
     ]
     
     if any(phrase in msg_lower for phrase in about_phrases):
         return (
-            "Hey there! I'm Agent Vish, your personal AI assistant created for Vishal Anand. "
-            "Vishal is a hands-on Customer Success Team Lead—think renewals, upselling, onboarding, crisis management, and getting customer value fast! "
-            "He leads teams, drives process improvement, and is skilled in client lifecycle management, reporting, APIs, automation, and tools like Salesforce, HubSpot, WhatsApp API, Zoho, and Excel. "
-            "Want to know about Vishal's client wins, team leadership, performance coaching, or career insights? Just ask!"
+            "I'm Agent Vish, the AI assistant for Vishal Anand—a Customer Success Team Lead at MyOperator, skilled in renewals, upselling, onboarding, APIs, analytics, and SaaS operations.\n\n"
+            "Here are Vishal's key skills: client lifecycle management, coaching, escalation handling, reporting, process improvement, automation, and tools like Salesforce, HubSpot, WhatsApp Business API, Zoho, and Excel. Want details about a specific project, client win, or tool? Just ask!"
         )
 
 def insight_skill(message, memory):
-    msg_lower = message.lower()
-    
-    if 'insight' in msg_lower or 'analysis' in msg_lower:
-        return (
-            "I can provide insights on various topics related to AI, automation, business analytics, and more. "
-            "What specific area would you like to know more about?"
-        )
+    if 'insight' in message.lower():
+        return "Here's an insight: Focus on customer value and retention!"
 
 def report_skill(message, memory):
     if "report" in message.lower():
@@ -138,9 +123,8 @@ def knowledge_skill(message, memory):
     
     if any(phrase in msg_lower for phrase in knowledge_phrases):
         return (
-            "Hey there! I'm Agent Vish, your personal AI assistant created for Vishal Anand. "
-            "Vishal is a hands-on Customer Success Team Lead—think renewals, upselling, onboarding, crisis management, and getting customer value fast! "
-            "He leads teams, drives process improvement, and is skilled in client lifecycle management, reporting, APIs, automation, and tools like Salesforce, HubSpot, WhatsApp API, Zoho, and Excel. "
+            "I'm Agent Vish, the AI assistant for Vishal Anand—a Customer Success Team Lead at MyOperator, skilled in renewals, upselling, onboarding, APIs, analytics, and SaaS operations. "
+            "Vishal leads teams, drives process improvement, and is skilled in client lifecycle management, reporting, automation, and tools like Salesforce, HubSpot, WhatsApp Business API, Zoho, and Excel. "
             "Want to know about Vishal's client wins, team leadership, performance coaching, or career insights? Just ask!"
         )
 
