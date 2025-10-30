@@ -70,7 +70,7 @@
       <div class="loading" id="loading">Agent Vish is thinking</div>
       <div class="error-msg" id="error"></div>
       <div class="input-area">
-        <input type="text" id="userInput" placeholder="Type your message..." autocomplete="off" maxlength="1000">
+        <input type="text" id="userInput" placeholder="Type your message..." autocomplete="off" maxlength="1000" />
         <button id="sendBtn">Send</button>
       </div>
     </div>
@@ -138,7 +138,8 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: sanitizedMessage }),
         });
-        if (data && data.reply) { addMessage(data.reply, false); } else { throw new Error('Invalid response from server'); }
+        const replyText = data.reply || data.message || 'Sorry, I encountered an error. Please try again.';
+        addMessage(replyText, false);
       } catch (error) {
         console.error('Error:', error);
         showError('Failed to get response. Please try again.');
