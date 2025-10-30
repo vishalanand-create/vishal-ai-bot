@@ -26,27 +26,21 @@ def clean_text(s: str) -> str:
 BIO = (
     "Vishal Anand: Customer Success Team Lead at MyOperator; renewals, client lifecycle, upsell, analytics, onboarding, escalation, leadership; keen on LLMs & agentic workflows. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
-
 SKILLS = (
     "Skills: Renewals, upsell/cross-sell, onboarding, client lifecycle, dashboarding, coaching, escalation, Salesforce, HubSpot, Zoho, WhatsApp API, Excel, analytics. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
-
 PROJECTS = (
     "Projects: Agent Vish bot, CS upgrades (6.5M/yr), dashboards, agentic tools. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
-
 FEATURES = (
     "Features: FAQ, analytics, project tracking, workflows. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
-
 HELP = (
     "Try: about vishal, skills, projects, or features. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
-
 FALLBACK = (
     "Try: about vishal, skills, projects, or features. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
-
 DEBUG_SUMMARY_PREFIX = "Debug: "
 
 # Response helpers to force single-line outputs everywhere
@@ -78,6 +72,37 @@ class AgentVish:
             "help": lambda: single_line(HELP),
             "fallback": lambda: single_line(FALLBACK),
         }
+    
+    def receive_message(self, msg: str) -> str:
+        """Receive user input and route to appropriate intent handler.
+        
+        Args:
+            msg: User input text
+            
+        Returns:
+            Single-line response string
+        """
+        if not msg:
+            return self.handle_intent("fallback")
+        
+        # Normalize message
+        msg_lower = msg.lower().strip()
+        
+        # Intent keyword matching
+        if any(kw in msg_lower for kw in ["bio", "about", "who", "vishal"]):
+            intent = "bio"
+        elif any(kw in msg_lower for kw in ["skill", "expertise", "experience"]):
+            intent = "skills"
+        elif any(kw in msg_lower for kw in ["project", "work", "portfolio"]):
+            intent = "projects"
+        elif any(kw in msg_lower for kw in ["feature", "capability", "can you"]):
+            intent = "features"
+        elif any(kw in msg_lower for kw in ["help", "how", "what"]):
+            intent = "help"
+        else:
+            intent = "fallback"
+        
+        return self.handle_intent(intent)
     
     def handle_intent(self, intent: str, debug: Any | None = None) -> str:
         """Handle intent routing and return appropriate response."""
