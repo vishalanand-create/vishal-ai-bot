@@ -3,7 +3,9 @@ import logging
 from skills.analytics_skill import analytics_skill
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 
 class AgenticAIBot:
@@ -29,6 +31,10 @@ class AgenticAIBot:
     
     def receive_message(self, message):
         try:
+            # Accept any non-empty string as valid input
+            if not message or not isinstance(message, str) or not message.strip():
+                return "Please provide a valid message."
+            
             logger.info(f"Received message: {message}")
             
             # Agentic processing
@@ -46,7 +52,9 @@ class AgenticAIBot:
 
 # Sample skills
 def greet_skill(message, memory):
-    if "hello" in message.lower():
+    # Accept simple greetings like hi, hello, hey, etc.
+    greetings = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening"]
+    if any(greeting in message.lower() for greeting in greetings):
         return "Hello! How can I assist you today?"
 
 def faq_skill(message, memory):
