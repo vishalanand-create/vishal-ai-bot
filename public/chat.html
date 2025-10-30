@@ -43,106 +43,104 @@
         
         .chat-messages {
             flex: 1;
-            padding: 20px;
             overflow-y: auto;
-            background: #f5f5f5;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
         
         .message {
-            margin-bottom: 15px;
-            display: flex;
-            animation: fadeIn 0.3s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .message.user {
-            justify-content: flex-end;
-        }
-        
-        .message-content {
             max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 15px;
+            padding: 12px 18px;
+            border-radius: 18px;
             word-wrap: break-word;
+            animation: slideIn 0.3s ease-out;
         }
         
-        .message.user .message-content {
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .user-message {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border-bottom-right-radius: 5px;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
         }
         
-        .message.bot .message-content {
-            background: white;
+        .bot-message {
+            background: #f0f0f0;
             color: #333;
-            border: 1px solid #e0e0e0;
-            border-bottom-left-radius: 5px;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
         }
         
         .chat-input-container {
             padding: 20px;
-            background: white;
+            background: #f9f9f9;
             border-top: 1px solid #e0e0e0;
             display: flex;
             gap: 10px;
         }
         
-        #user-input {
+        #userInput {
             flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
+            padding: 12px 18px;
+            border: 2px solid #667eea;
             border-radius: 25px;
-            font-size: 14px;
+            font-size: 16px;
             outline: none;
             transition: border-color 0.3s;
         }
         
-        #user-input:focus {
-            border-color: #667eea;
+        #userInput:focus {
+            border-color: #764ba2;
         }
         
-        #send-button {
+        #sendButton {
             padding: 12px 30px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 25px;
+            font-size: 16px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
             transition: transform 0.2s, box-shadow 0.2s;
         }
         
-        #send-button:hover:not(:disabled) {
+        #sendButton:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         
-        #send-button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        #sendButton:active {
+            transform: translateY(0);
         }
         
         .typing-indicator {
-            display: flex;
-            gap: 5px;
-            padding: 12px 16px;
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 15px;
-            width: fit-content;
-            border-bottom-left-radius: 5px;
+            display: none;
+            align-self: flex-start;
+            padding: 12px 18px;
+            background: #f0f0f0;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
         }
         
         .typing-indicator span {
+            display: inline-block;
             width: 8px;
             height: 8px;
             background: #667eea;
             border-radius: 50%;
+            margin: 0 2px;
             animation: typing 1.4s infinite;
         }
         
@@ -155,8 +153,12 @@
         }
         
         @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-10px); }
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
         }
     </style>
 </head>
@@ -165,135 +167,94 @@
         <div class="chat-header">
             🤖 Agent Vish
         </div>
-        <div class="chat-messages" id="chat-messages">
-            <!-- Messages will appear here -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                Hello! I'm Agent Vish, your AI assistant. How can I help you today?
+            </div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
         <div class="chat-input-container">
-            <input type="text" id="user-input" placeholder="Type your message..." />
-            <button id="send-button">Send</button>
+            <input type="text" id="userInput" placeholder="Type your message..." />
+            <button id="sendButton">Send</button>
         </div>
     </div>
 
     <script>
-        const chatMessages = document.getElementById('chat-messages');
-        const userInput = document.getElementById('user-input');
-        const sendButton = document.getElementById('send-button');
-        
-        // Update API endpoint to /chat
-        const API_ENDPOINT = '/chat';
-        
-        // Add welcome message
-        addMessage('Hello! I\'m Agent Vish. How can I help you today?', false);
-        
-        function addMessage(text, isUser) {
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        function showMessage(message, isUser = false) {
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            contentDiv.textContent = text;
-            
-            messageDiv.appendChild(contentDiv);
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = message;
             chatMessages.appendChild(messageDiv);
-            
-            // Scroll to bottom
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-        
-        function addTypingIndicator() {
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message bot';
-            typingDiv.id = 'typing-indicator';
-            
-            const indicatorDiv = document.createElement('div');
-            indicatorDiv.className = 'typing-indicator';
-            indicatorDiv.innerHTML = '<span></span><span></span><span></span>';
-            
-            typingDiv.appendChild(indicatorDiv);
-            chatMessages.appendChild(typingDiv);
+
+        function showTyping() {
+            typingIndicator.style.display = 'block';
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-        
-        function removeTypingIndicator() {
-            const indicator = document.getElementById('typing-indicator');
-            if (indicator) {
-                indicator.remove();
-            }
+
+        function hideTyping() {
+            typingIndicator.style.display = 'none';
         }
-        
+
         async function sendMessage() {
             const message = userInput.value.trim();
             if (!message) return;
-            
-            // Disable input while processing
-            sendButton.disabled = true;
-            userInput.disabled = true;
-            
-            // Add user message
-            addMessage(message, true);
+
+            showMessage(message, true);
             userInput.value = '';
-            
-            // Show typing indicator
-            addTypingIndicator();
-            
-            try {
-                console.log('Sending message:', message);
-                const response = await fetch(API_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: message })
-                });
-                
+            showTyping();
+
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => {
                 if (!response.ok) {
-                    // Try to get error details from response
-                    let errorMessage = `Server error: ${response.status} ${response.statusText}`;
-                    try {
-                        const errorData = await response.json();
-                        if (errorData.error) {
-                            errorMessage = `Error: ${errorData.error}`;
+                    return response.text().then(text => {
+                        let errorMsg = "Server error occurred";
+                        try {
+                            const json = JSON.parse(text);
+                            errorMsg = json.error || text || "Unknown error";
+                        } catch (e) {
+                            errorMsg = text || "Unknown error";
                         }
-                    } catch (e) {
-                        // If JSON parsing fails, use the status text
-                    }
-                    console.error('API Error:', errorMessage, response);
-                    throw new Error(errorMessage);
+                        throw new Error(errorMsg);
+                    });
                 }
-                
-                const data = await response.json();
-                console.log('API Response:', data);
-                removeTypingIndicator();
-                
-                // Use data.reply to match backend response format
-                const botReply = data.reply || data.response || data.message;
-                addMessage(botReply, false);
-                
-            } catch (error) {
-                removeTypingIndicator();
-                // Show detailed error message in chat UI
-                const errorMsg = error.message || 'Sorry, I encountered an error. Please try again.';
-                addMessage(`❌ ${errorMsg}`, false);
-                console.error('Error details:', error);
-            } finally {
-                // Re-enable input
-                sendButton.disabled = false;
-                userInput.disabled = false;
-                userInput.focus();
-            }
+                return response.text().then(text => {
+                    if (!text) throw new Error("Empty API response from backend");
+                    return JSON.parse(text);
+                });
+            })
+            .then(data => {
+                hideTyping();
+                showMessage(data.response || data.error || "No reply");
+            })
+            .catch(error => {
+                hideTyping();
+                showMessage("❌ " + error.message);
+            });
         }
-        
-        // Event listeners
+
         sendButton.addEventListener('click', sendMessage);
-        
         userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 sendMessage();
             }
         });
-        
-        // Focus on input when page loads
-        userInput.focus();
     </script>
 </body>
 </html>
