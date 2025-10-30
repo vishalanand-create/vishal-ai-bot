@@ -6,22 +6,24 @@
   <title>Agent Vish Chat</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f6f8fb; color: #111; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff; color: #111; }
     .wrap { max-width: 720px; margin: 0 auto; padding: 24px; }
-    .chat { background: #fff; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,0.06); overflow: hidden; }
-    .chat-header { padding: 16px 20px; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color: #fff; }
-    .chat-body { height: 60vh; overflow-y: auto; padding: 16px; }
+    .chat { background: #fff; border-radius: 12px; border: 2px solid #000; overflow: hidden; }
+    .chat-header { padding: 16px 20px; background: #000; color: #fff; border-bottom: 2px solid #000; }
+    .chat-body { height: 60vh; overflow-y: auto; padding: 16px; background: #fff; }
     .msg { margin: 10px 0; padding: 10px 12px; border-radius: 10px; max-width: 85%; line-height: 1.4; white-space: pre-wrap; word-wrap: break-word; }
-    .bot { background: #f1f5ff; color: #162466; border: 1px solid #e0e7ff; }
-    .user { background: #f6f7f9; border: 1px solid #eaecef; margin-left: auto; }
-    .chat-footer { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-top: 1px solid #eef1f6; }
+    .bot { background: #fff; color: #111; border: 2px solid #000; }
+    .user { background: #fff; border: 2px solid #000; margin-left: auto; }
+    .chat-footer { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-top: 2px solid #000; background: #fff; }
     .input-row { display: flex; gap: 8px; }
-    input[type=text] { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #cfd7e6; font-size: 16px; }
-    button { padding: 10px 14px; border-radius: 8px; border: 0; background: #667eea; color: #fff; cursor: pointer; }
+    input[type=text] { flex: 1; padding: 12px; border-radius: 8px; border: 2px solid #000; font-size: 16px; background: #fff; color: #000; }
+    button { padding: 10px 14px; border-radius: 8px; border: 2px solid #000; background: #fff; color: #000; cursor: pointer; font-weight: bold; }
+    button:hover { background: #000; color: #fff; }
     button:disabled { opacity: .6; cursor: not-allowed; }
-    .error { color: #b00020; padding: 8px 12px; }
+    .error { color: #000; padding: 8px 12px; border: 2px solid #000; background: #fff; }
     .quick { display: flex; flex-wrap: wrap; gap: 8px; }
-    .quick button { background: #eef2ff; color: #18224d; border: 1px solid #dfe4ff; font-size: 14px; padding: 8px 12px; }
+    .quick button { background: #fff; color: #000; border: 2px solid #000; font-size: 14px; padding: 8px 12px; }
+    .quick button:hover { background: #000; color: #fff; }
   </style>
 </head>
 <body>
@@ -34,86 +36,8 @@
           <input type="text" id="inp" placeholder="Type your message..." />
           <button id="send">Send</button>
         </div>
-        <div class="quick">
-          <button data-q="about vishal">About</button>
-          <button data-q="core skills">Skills</button>
-          <button data-q="projects">Projects</button>
-          <button data-q="features">Features</button>
-          <button data-q="help">Help</button>
-        </div>
       </div>
-      <div id="error" class="error"></div>
     </div>
   </div>
-  <script>
-    const log = document.getElementById('log');
-    const inp = document.getElementById('inp');
-    const sendBtn = document.getElementById('send');
-    const errBox = document.getElementById('error');
-    function sanitizeText(str) {
-      const txt = document.createElement('textarea');
-      txt.textContent = (str || '').trim();
-      return txt.innerHTML;
-    }
-    function addMsg(text, type = 'bot') {
-      const div = document.createElement('div');
-      div.className = 'msg ' + type;
-      div.textContent = text || '';
-      log.appendChild(div);
-      log.scrollTop = log.scrollHeight;
-    }
-    function showError(text) {
-      errBox.textContent = text || '';
-      if (text) console.error(text);
-    }
-    async function send(text) {
-      const clean = sanitizeText(text);
-      if (!clean) { showError('Please enter a valid message.'); return; }
-      showError('');
-      addMsg(clean, 'user');
-      inp.value = '';
-      sendBtn.disabled = true;
-      try {
-        const res = await fetch('/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: clean })
-        });
-        const ct = res.headers.get('content-type') || '';
-        if (!res.ok) {
-          let errorText = `Error ${res.status}`;
-          if (ct.includes('application/json')) {
-            const data = await res.json().catch(() => ({}));
-            if (data && (data.message || data.error)) {
-              errorText += `: ${data.message || data.error}`;
-            }
-          } else {
-            const t = await res.text();
-            if (t) errorText += `: ${t}`;
-          }
-          showError(errorText);
-          addMsg('Sorry, your request could not be processed.', 'bot');
-          return;
-        }
-        const data = ct.includes('application/json') ? await res.json() : null;
-        if (data && data.ok && typeof data.message === 'string') {
-          addMsg(sanitizeText(data.message), 'bot');
-        } else {
-          addMsg('Unexpected response from server.', 'bot');
-        }
-      } catch (e) {
-        showError('Network or server error. Please try again.');
-      } finally {
-        sendBtn.disabled = false;
-      }
-    }
-    sendBtn.addEventListener('click', () => send(inp.value));
-    inp.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') send(inp.value);
-    });
-    document.querySelectorAll('.quick button').forEach(b => b.addEventListener('click', () => send(b.dataset.q)));
-    // Greet on load
-    addMsg('Hi, I\'m Agent Vish. Ask about Vishal, skills, projects, or features.');
-  </script>
 </body>
 </html>
