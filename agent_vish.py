@@ -37,33 +37,37 @@ class AgenticAIBot:
             
             logger.info(f"Received message: {message}")
             
-            # Agentic processing
+            # Try each skill in sequence
             for skill in self.skills:
-                result = skill(message, self.memory)
-                if result is not None:
-                    logger.info(f"Skill returned result: {result[:50]}..." if len(result) > 50 else f"Skill returned result: {result}")
-                    return result
+                response = skill(message, self.memory)
+                if response:
+                    logger.info(f"Skill matched. Response: {response[:50]}...")
+                    return response
             
-            logger.warning(f"No skill could handle message: {message}")
-            return f"{self.name} could not understand your request."
+            return "I'm not sure how to respond to that. Try asking about my skills or analytics!"
         except Exception as e:
-            logger.error(f"Error processing message: {message}. Error: {str(e)}", exc_info=True)
-            return f"Sorry, an error occurred while processing your request."
+            logger.error(f"Error processing message: {e}")
+            return "Sorry, I encountered an error processing your message."
 
-# Sample skills
 def greet_skill(message, memory):
-    # Accept simple greetings like hi, hello, hey, etc.
-    greetings = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon", "good evening"]
-    if any(greeting in message.lower() for greeting in greetings):
-        return "Hello! How can I assist you today?"
+    msg_lower = message.lower()
+    greetings = ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening']
+    
+    if any(greet in msg_lower for greet in greetings):
+        return "Hello! I'm Agent Vish. How can I assist you today?"
 
 def faq_skill(message, memory):
-    if "faq" in message.lower():
-        return "Check out our FAQ at example.com/faq"
+    msg_lower = message.lower()
+    
+    if 'how are you' in msg_lower or 'how r u' in msg_lower:
+        return "I'm functioning well, thank you! How can I help you?"
+    
+    if 'thank' in msg_lower:
+        return "You're welcome! Let me know if you need anything else."
 
 def about_me_skill(message, memory):
     msg_lower = message.lower()
-    # Check for exact phrase matches (case-insensitive)
+    
     phrases = [
         'who are you',
         'what is your name',
@@ -85,12 +89,15 @@ def insight_skill(message, memory):
     
     # Check for natural language variations asking about skills/capabilities
     skill_phrases = [
-        'what\'s your skill',
+        'skill',
+        'skills',
+        "what's your skill",
         'what are your skills',
         'your skills',
         'abilities',
         'what can you do',
         'what are you good at',
+        'capabilities',
         'your capabilities',
         'what do you do',
         'tell me your skills',
