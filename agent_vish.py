@@ -75,13 +75,44 @@ def about_me_skill(message, memory):
     ]
     if any(phrase in msg_lower for phrase in phrases):
         return "I am Agent Vish, your AI assistant."
+    
     # Fallback to substring match for 'about'
     if 'about' in msg_lower:
         return "I am Agent Vish, your AI assistant."
 
 def insight_skill(message, memory):
-    if "insight" in message.lower():
-        return "Here are some insights based on your data..."
+    msg_lower = message.lower()
+    
+    # Check for natural language variations asking about skills/capabilities
+    skill_phrases = [
+        'what\'s your skill',
+        'what are your skills',
+        'your skills',
+        'abilities',
+        'what can you do',
+        'what are you good at',
+        'your capabilities',
+        'what do you do',
+        'tell me your skills',
+        'list your skills',
+        'what are your abilities',
+        'show me your skills',
+        'your capability',
+        'what can you help with',
+        'what do you know',
+        'insight'
+    ]
+    
+    if any(phrase in msg_lower for phrase in skill_phrases):
+        return (
+            "I'm Agent Vish, and here's what I can do for you:\n"
+            "✨ Greet and chat with you\n"
+            "📊 Provide analytics and insights\n"
+            "📝 Generate reports\n"
+            "❓ Answer FAQs\n"
+            "💬 Have natural conversations\n"
+            "Feel free to ask me anything!"
+        )
 
 def report_skill(message, memory):
     if "report" in message.lower():
