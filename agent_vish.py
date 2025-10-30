@@ -71,17 +71,19 @@ def about_me_skill(message, memory):
         'tell me about yourself',
         'what is your purpose',
         'introduce yourself',
-        'yourself'
+        'yourself',
+        'what is your name',
+        'your name',
+        "what's your name",
+        'whats your name'
     ]
     
     if any(phrase in msg_lower for phrase in about_phrases):
         return (
-            "Absolutely! I'm Agent Vish, your AI assistant dedicated to Vishal Anand. "
-            "Vishal is a Customer Success Team Lead with 5+ years experience across client management, renewals, upselling, escalations, and team leadership. "
-            "At MyOperator, he's led a team of 4 AMs and 30 cross-functional partners to deliver record upgrades and retention—think 6.5M upgrades/year, 80+ renewals/month, and top scores on CSAT and NPS. "
-            "Vishal is known for coaching, escalation management, driving adoption, building dashboards, and process improvement. "
-            "He's also skilled with WhatsApp Business API, Salesforce, HubSpot, Zoho, Excel, and all things customer lifecycle. "
-            "You can ask me about Vishal's expertise in SaaS customer success, business analytics, operations, playbooks, or career highlights!"
+            "Hey there! I'm Agent Vish, your personal AI assistant created for Vishal Anand. "
+            "Vishal is a hands-on Customer Success Team Lead—think renewals, upselling, onboarding, crisis management, and getting customer value fast! "
+            "He leads teams, drives process improvement, and is skilled in client lifecycle management, reporting, APIs, automation, and tools like Salesforce, HubSpot, WhatsApp API, Zoho, and Excel. "
+            "Want to know about Vishal's client wins, team leadership, performance coaching, or career insights? Just ask!"
         )
 
 def insight_skill(message, memory):
@@ -107,17 +109,17 @@ def knowledge_skill(message, memory):
         'your expertise',
         'what is your knowledge',
         'tell me what you know',
-        'your knowledge base'
+        'your knowledge base',
+        'know',
+        'expertise'
     ]
     
     if any(phrase in msg_lower for phrase in knowledge_phrases):
         return (
-            "Absolutely! I'm Agent Vish, your AI assistant dedicated to Vishal Anand. "
-            "Vishal is a Customer Success Team Lead with 5+ years experience across client management, renewals, upselling, escalations, and team leadership. "
-            "At MyOperator, he's led a team of 4 AMs and 30 cross-functional partners to deliver record upgrades and retention—think 6.5M upgrades/year, 80+ renewals/month, and top scores on CSAT and NPS. "
-            "Vishal is known for coaching, escalation management, driving adoption, building dashboards, and process improvement. "
-            "He's also skilled with WhatsApp Business API, Salesforce, HubSpot, Zoho, Excel, and all things customer lifecycle. "
-            "You can ask me about Vishal's expertise in SaaS customer success, business analytics, operations, playbooks, or career highlights!"
+            "Hey there! I'm Agent Vish, your personal AI assistant created for Vishal Anand. "
+            "Vishal is a hands-on Customer Success Team Lead—think renewals, upselling, onboarding, crisis management, and getting customer value fast! "
+            "He leads teams, drives process improvement, and is skilled in client lifecycle management, reporting, APIs, automation, and tools like Salesforce, HubSpot, WhatsApp API, Zoho, and Excel. "
+            "Want to know about Vishal's client wins, team leadership, performance coaching, or career insights? Just ask!"
         )
 
 def upsell_skill(message, memory):
