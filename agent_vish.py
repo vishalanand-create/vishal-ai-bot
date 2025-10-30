@@ -62,7 +62,21 @@ def faq_skill(message, memory):
         return "Check out our FAQ at example.com/faq"
 
 def about_me_skill(message, memory):
-    if "about" in message.lower():
+    msg_lower = message.lower()
+    # Check for exact phrase matches (case-insensitive)
+    phrases = [
+        'who are you',
+        'what is your name',
+        'your name',
+        'about you',
+        'introduce yourself',
+        'name please',
+        'who r u'
+    ]
+    if any(phrase in msg_lower for phrase in phrases):
+        return "I am Agent Vish, your AI assistant."
+    # Fallback to substring match for 'about'
+    if 'about' in msg_lower:
         return "I am Agent Vish, your AI assistant."
 
 def insight_skill(message, memory):
