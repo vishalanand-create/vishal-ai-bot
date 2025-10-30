@@ -76,38 +76,38 @@
         
         .message-content {
             max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 18px;
+            padding: 12px 18px;
+            border-radius: 20px;
             word-wrap: break-word;
+            line-height: 1.5;
         }
         
         .user .message-content {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 5px;
         }
         
         .bot .message-content {
-            background: white;
+            background: #e9ecef;
             color: #333;
-            border: 1px solid #e0e0e0;
-            border-bottom-left-radius: 4px;
+            border-bottom-left-radius: 5px;
         }
         
-        .input-area {
+        .input-container {
             padding: 20px;
             background: white;
-            border-top: 1px solid #e0e0e0;
+            border-top: 1px solid #dee2e6;
             display: flex;
             gap: 10px;
         }
         
         #userInput {
             flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
+            padding: 12px 18px;
+            border: 2px solid #e9ecef;
             border-radius: 25px;
-            font-size: 16px;
+            font-size: 15px;
             outline: none;
             transition: border-color 0.3s;
         }
@@ -117,14 +117,14 @@
         }
         
         #sendBtn {
-            padding: 12px 28px;
+            padding: 12px 30px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 15px;
+            font-weight: 600;
             transition: transform 0.2s, box-shadow 0.2s;
         }
         
@@ -138,26 +138,16 @@
         }
         
         .typing-indicator {
-            display: none;
-            padding: 12px 16px;
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 18px;
-            border-bottom-left-radius: 4px;
-            max-width: 70px;
+            display: flex;
+            gap: 5px;
+            padding: 15px;
         }
         
-        .typing-indicator.active {
-            display: inline-block;
-        }
-        
-        .typing-indicator span {
-            height: 8px;
+        .typing-indicator.active span {
             width: 8px;
-            background: #667eea;
+            height: 8px;
             border-radius: 50%;
-            display: inline-block;
-            margin: 0 2px;
+            background: #667eea;
             animation: typing 1.4s infinite;
         }
         
@@ -177,61 +167,38 @@
                 transform: translateY(-10px);
             }
         }
-        
-        #chatBox::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        #chatBox::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        
-        #chatBox::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 4px;
-        }
-        
-        #chatBox::-webkit-scrollbar-thumb:hover {
-            background: #764ba2;
-        }
     </style>
 </head>
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            🤖 Agent Vish
+            💬 Agent Vish
         </div>
-        <div id="chatBox">
-            <div class="message bot">
-                <div class="message-content">
-                    Hi! I'm Agent Vish. How can I help you today?
-                </div>
-            </div>
-        </div>
-        <div class="input-area">
+        <div id="chatBox"></div>
+        <div class="input-container">
             <input type="text" id="userInput" placeholder="Type your message..." />
             <button id="sendBtn">Send</button>
         </div>
     </div>
-
+    
     <script>
         const chatBox = document.getElementById('chatBox');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
-
-        function addMessage(message, isUser = false) {
+        
+        function showMessage(text, isUser) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', isUser ? 'user' : 'bot');
             
             const messageContent = document.createElement('div');
             messageContent.classList.add('message-content');
-            messageContent.textContent = message;
+            messageContent.textContent = text;
             
             messageDiv.appendChild(messageContent);
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
-
+        
         function showTypingIndicator() {
             const typingDiv = document.createElement('div');
             typingDiv.classList.add('message', 'bot');
@@ -245,23 +212,23 @@
             chatBox.appendChild(typingDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
-
+        
         function removeTypingIndicator() {
             const typing = document.getElementById('typingIndicator');
             if (typing) {
                 typing.remove();
             }
         }
-
+        
         async function sendMessage() {
             const message = userInput.value.trim();
             if (message === '') return;
-
-            addMessage(message, true);
+            
+            showMessage(message, true);
             userInput.value = '';
-
+            
             showTypingIndicator();
-
+            
             try {
                 const response = await fetch('https://agent-vish.onrender.com/chat', {
                     method: 'POST',
@@ -270,17 +237,17 @@
                     },
                     body: JSON.stringify({ message })
                 });
-
+                
                 const data = await response.json();
                 removeTypingIndicator();
-                addMessage(data.reply, false);
+                showMessage(data.response || data.error || "No reply", false);
             } catch (error) {
                 removeTypingIndicator();
-                addMessage('Sorry, I encountered an error. Please try again.', false);
+                showMessage('Sorry, I encountered an error. Please try again.', false);
                 console.error('Error:', error);
             }
         }
-
+        
         sendBtn.addEventListener('click', sendMessage);
         userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
