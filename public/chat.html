@@ -14,13 +14,14 @@
     .msg { margin: 10px 0; padding: 10px 12px; border-radius: 10px; max-width: 85%; line-height: 1.4; white-space: pre-wrap; word-wrap: break-word; }
     .bot { background: #f1f5ff; color: #162466; border: 1px solid #e0e7ff; }
     .user { background: #f6f7f9; border: 1px solid #eaecef; margin-left: auto; }
-    .chat-footer { display: flex; gap: 8px; padding: 12px; border-top: 1px solid #eef1f6; }
+    .chat-footer { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-top: 1px solid #eef1f6; }
+    .input-row { display: flex; gap: 8px; }
     input[type=text] { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #cfd7e6; font-size: 16px; }
     button { padding: 10px 14px; border-radius: 8px; border: 0; background: #667eea; color: #fff; cursor: pointer; }
     button:disabled { opacity: .6; cursor: not-allowed; }
     .error { color: #b00020; padding: 8px 12px; }
-    .quick { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 12px 0; }
-    .quick button { background: #eef2ff; color: #18224d; border: 1px solid #dfe4ff; }
+    .quick { display: flex; flex-wrap: wrap; gap: 8px; }
+    .quick button { background: #eef2ff; color: #18224d; border: 1px solid #dfe4ff; font-size: 14px; padding: 8px 12px; }
   </style>
 </head>
 <body>
@@ -28,47 +29,43 @@
     <div class="chat">
       <div class="chat-header"><strong>Agent Vish</strong> — Ask about Vishal, skills, projects, or features</div>
       <div id="log" class="chat-body"></div>
-      <div class="quick">
-        <button data-q="about vishal">About</button>
-        <button data-q="core skills">Skills</button>
-        <button data-q="projects">Projects</button>
-        <button data-q="features">Features</button>
-        <button data-q="help">Help</button>
-      </div>
-      <div id="err" class="error" role="alert" aria-live="polite"></div>
       <div class="chat-footer">
-        <input id="inp" type="text" placeholder="Type your message..." autocomplete="off" />
-        <button id="send">Send</button>
+        <div class="input-row">
+          <input type="text" id="inp" placeholder="Type your message..." />
+          <button id="send">Send</button>
+        </div>
+        <div class="quick">
+          <button data-q="about vishal">About</button>
+          <button data-q="core skills">Skills</button>
+          <button data-q="projects">Projects</button>
+          <button data-q="features">Features</button>
+          <button data-q="help">Help</button>
+        </div>
       </div>
+      <div id="error" class="error"></div>
     </div>
   </div>
   <script>
     const log = document.getElementById('log');
     const inp = document.getElementById('inp');
     const sendBtn = document.getElementById('send');
-    const errBox = document.getElementById('err');
-
-    const CONTROL = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g;
-    const EMOJI = /[\u{1F300}-\u{1FAFF}\u{1F600}-\u{1F64F}\u{2600}-\u{27BF}]/gu;
-
-    function sanitizeText(s) {
-      if (typeof s !== 'string') return '';
-      return s.replace(CONTROL, '').replace(EMOJI, '').trim();
+    const errBox = document.getElementById('error');
+    function sanitizeText(str) {
+      const txt = document.createElement('textarea');
+      txt.textContent = (str || '').trim();
+      return txt.innerHTML;
     }
-
-    function addMsg(text, who = 'bot') {
+    function addMsg(text, type = 'bot') {
       const div = document.createElement('div');
-      div.className = `msg ${who}`;
-      div.textContent = text;
+      div.className = 'msg ' + type;
+      div.textContent = text || '';
       log.appendChild(div);
       log.scrollTop = log.scrollHeight;
     }
-
     function showError(text) {
       errBox.textContent = text || '';
       if (text) console.error(text);
     }
-
     async function send(text) {
       const clean = sanitizeText(text);
       if (!clean) { showError('Please enter a valid message.'); return; }
@@ -110,13 +107,11 @@
         sendBtn.disabled = false;
       }
     }
-
     sendBtn.addEventListener('click', () => send(inp.value));
     inp.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') send(inp.value);
     });
     document.querySelectorAll('.quick button').forEach(b => b.addEventListener('click', () => send(b.dataset.q)));
-
     // Greet on load
     addMsg('Hi, I\'m Agent Vish. Ask about Vishal, skills, projects, or features.');
   </script>
