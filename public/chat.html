@@ -5,61 +5,207 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Vish Chat</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
       background: linear-gradient(135deg, #f5f5f5 0%, #e9e9f3 100%);
-      color: #181933; min-height: 100vh; display: flex; align-items: center; padding: 20px;
+      color: #181933;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 20px;
     }
-    .wrap { max-width: 800px; width: 100%; margin: 0 auto; }
+    
+    .wrap {
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    
     .chat {
-      background: #fff; border-radius: 20px; overflow: hidden;
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
       box-shadow: 0 20px 60px rgba(24, 25, 51, 0.15), 0 8px 20px rgba(24, 25, 51, 0.08);
     }
+    
     .head {
       background: linear-gradient(135deg, #6C63FF 0%, #5A52D5 100%);
-      color: #fff; padding: 24px; text-align: center; font-size: 24px; font-weight: 700; letter-spacing: -0.02em;
+      color: #fff;
+      padding: 24px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
     }
+    
     .msgs {
-      padding: 24px; height: 500px; overflow-y: auto; background: #fafafa; display: flex; flex-direction: column; gap: 16px;
+      padding: 24px;
+      height: 500px;
+      overflow-y: auto;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
-    .msg { display: flex; gap: 12px; animation: slideIn 0.3s ease-out; }
-    @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .msg.user { flex-direction: row-reverse; }
+    
+    .msg {
+      display: flex;
+      gap: 12px;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .msg.user {
+      flex-direction: row-reverse;
+    }
+    
     .msg .bubble {
-      max-width: 70%; padding: 14px 18px; border-radius: 18px; word-wrap: break-word;
-      line-height: 1.5; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      max-width: 70%;
+      padding: 14px 18px;
+      border-radius: 18px;
+      word-wrap: break-word;
+      line-height: 1.5;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
-    .msg.bot .bubble { background: #ffffff; color: #181933; border: 1px solid #e5e5e5; }
-    .msg.user .bubble { background: linear-gradient(135deg, #6C63FF 0%, #5A52D5 100%); color: #fff; }
+    
+    .msg.bot .bubble {
+      background: #ffffff;
+      color: #181933;
+      border: 1px solid #e5e5e5;
+    }
+    
+    .msg.user .bubble {
+      background: linear-gradient(135deg, #6C63FF 0%, #5A52D5 100%);
+      color: #fff;
+    }
+    
     .msg .avatar {
-      width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center;
-      justify-content: center; font-size: 20px; flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
     }
-    .msg.bot .avatar { background: linear-gradient(135deg, #6C63FF 0%, #5A52D5 100%); }
-    .msg.user .avatar { background: #e9e9f3; }
+    
+    .msg.bot .avatar {
+      background: linear-gradient(135deg, #6C63FF 0%, #5A52D5 100%);
+    }
+    
+    .msg.user .avatar {
+      background: #e9e9f3;
+    }
+    
     .input-area {
-      padding: 20px; background: #fff; border-top: 1px solid #e5e5e5; display: flex; gap: 12px; align-items: center;
+      padding: 20px;
+      background: #fff;
+      border-top: 1px solid #e5e5e5;
+      display: flex;
+      gap: 12px;
+      align-items: center;
     }
+    
     #userInput {
-      flex: 1; padding: 14px 18px; border: 2px solid #e5e5e5; border-radius: 24px; font-size: 15px;
-      outline: none; transition: all 0.2s ease; font-family: inherit;
+      flex: 1;
+      padding: 14px 18px;
+      border: 2px solid #e5e5e5;
+      border-radius: 24px;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s ease;
+      font-family: inherit;
     }
-    #userInput:focus { border-color: #6C63FF; box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1); }
+    
+    #userInput:focus {
+      border-color: #6C63FF;
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+    }
+    
     #sendBtn {
-      padding: 14px 28px; background: linear-gradient(135deg, #6C63FF 0%, #5A52D5 100%);
-      color: #fff; border: none; border-radius: 24px; font-size: 15px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #6C63FF 0%, #5A52D5 100%);
+      color: #fff;
+      border: none;
+      border-radius: 24px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
     }
-    #sendBtn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4); }
-    #sendBtn:active:not(:disabled) { transform: translateY(0); }
-    #sendBtn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .loading { display: none; text-align: center; padding: 10px; color: #6C63FF; font-size: 14px; font-weight: 500; }
-    .loading.active { display: block; }
-    .loading::after { content: '...'; animation: dots 1.5s steps(3, end) infinite; }
-    @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
-    .error-msg { color: #ff4444; font-size: 13px; padding: 8px 18px; display: none; }
-    .error-msg.active { display: block; }
+    
+    #sendBtn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+    }
+    
+    #sendBtn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    #sendBtn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 10px;
+      color: #6C63FF;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .loading.active {
+      display: block;
+    }
+    
+    .loading::after {
+      content: '...';
+      animation: dots 1.5s steps(3, end) infinite;
+    }
+    
+    @keyframes dots {
+      0%, 20% {
+        content: '.';
+      }
+      40% {
+        content: '..';
+      }
+      60%, 100% {
+        content: '...';
+      }
+    }
+    
+    .error-msg {
+      color: #ff4444;
+      font-size: 13px;
+      padding: 8px 18px;
+      display: none;
+    }
+    
+    .error-msg.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -75,12 +221,19 @@
       </div>
     </div>
   </div>
+  
   <script>
     function sanitizeInput(input) {
       if (typeof input !== 'string') return '';
       return input.trim().replace(/[<>]/g, '').substring(0, 1000);
     }
-    function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
     async function fetchWithRetry(url, options, maxRetries = 3) {
       for (let i = 0; i < maxRetries; i++) {
         try {
@@ -93,70 +246,111 @@
         }
       }
     }
+    
     function showError(message) {
       const errorEl = document.getElementById('error');
       errorEl.textContent = message;
       errorEl.classList.add('active');
-      setTimeout(() => { errorEl.classList.remove('active'); }, 5000);
+      setTimeout(() => {
+        errorEl.classList.remove('active');
+      }, 5000);
     }
+    
     function setLoading(isLoading) {
       const loadingEl = document.getElementById('loading');
       const sendBtn = document.getElementById('sendBtn');
       const userInput = document.getElementById('userInput');
+      
       if (isLoading) {
-        loadingEl.classList.add('active'); sendBtn.disabled = true; userInput.disabled = true;
+        loadingEl.classList.add('active');
+        sendBtn.disabled = true;
+        userInput.disabled = true;
       } else {
-        loadingEl.classList.remove('active'); sendBtn.disabled = false; userInput.disabled = false;
+        loadingEl.classList.remove('active');
+        sendBtn.disabled = false;
+        userInput.disabled = false;
       }
     }
+    
     function addMessage(text, isUser) {
       const msgsContainer = document.getElementById('msgs');
       const msgDiv = document.createElement('div');
       msgDiv.className = `msg ${isUser ? 'user' : 'bot'}`;
+      
       const avatar = document.createElement('div');
       avatar.className = 'avatar';
       avatar.textContent = isUser ? '👤' : '🤖';
+      
       const bubble = document.createElement('div');
       bubble.className = 'bubble';
       bubble.textContent = text;
+      
       msgDiv.appendChild(avatar);
       msgDiv.appendChild(bubble);
       msgsContainer.appendChild(msgDiv);
       msgsContainer.scrollTop = msgsContainer.scrollHeight;
     }
+    
     async function sendMessage() {
       const userInput = document.getElementById('userInput');
       const rawMessage = userInput.value;
       const sanitizedMessage = sanitizeInput(rawMessage);
-      if (!sanitizedMessage) { showError('Please enter a valid message'); return; }
+      
+      if (!sanitizedMessage) {
+        showError('Please enter a valid message');
+        return;
+      }
+      
       userInput.value = '';
       addMessage(sanitizedMessage, true);
       setLoading(true);
+      
       try {
         const data = await fetchWithRetry('/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({ message: sanitizedMessage }),
         });
+        
         const replyText = data.reply || data.message || 'Sorry, I encountered an error. Please try again.';
         addMessage(replyText, false);
       } catch (error) {
         console.error('Error:', error);
         showError('Failed to get response. Please try again.');
         addMessage('Sorry, I encountered an error. Please try again.', false);
-      } finally { setLoading(false); userInput.focus(); }
+      } finally {
+        setLoading(false);
+        userInput.focus();
+      }
     }
+    
     function initializeChat() {
       const sendBtn = document.getElementById('sendBtn');
       const userInput = document.getElementById('userInput');
-      if (!sendBtn || !userInput) { console.error('Required elements not found'); return; }
+      
+      if (!sendBtn || !userInput) {
+        console.error('Required elements not found');
+        return;
+      }
+      
       sendBtn.addEventListener('click', sendMessage);
       userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
       });
+      
       userInput.focus();
     }
-    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initializeChat); } else { initializeChat(); }
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeChat);
+    } else {
+      initializeChat();
+    }
   </script>
 </body>
 </html>
