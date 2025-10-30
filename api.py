@@ -70,7 +70,7 @@ def chat():
         
         user_message = data['message']
         
-        # Validate message is not empty
+        # Only reject empty or whitespace-only messages
         if not user_message or not user_message.strip():
             logger.warning("Empty message received")
             return jsonify({
