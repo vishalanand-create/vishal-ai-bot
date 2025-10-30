@@ -24,33 +24,32 @@ def clean_text(s: str) -> str:
 
 # Core content constants (single-line enforced)
 BIO = (
-    "Vishal Anand: Customer Success Team Lead at MyOperator; renewals, client lifecycle, upsell, analytics, onboarding, escalation, leadership; keen on LLMs & agentic workflows."
+    "Vishal Anand: Customer Success Team Lead at MyOperator; renewals, client lifecycle, upsell, analytics, onboarding, escalation, leadership; keen on LLMs & agentic workflows. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
 
 SKILLS = (
-    "Skills: Renewals, upsell/cross-sell, onboarding, client lifecycle, dashboarding, coaching, escalation, Salesforce, HubSpot, Zoho, WhatsApp API, Excel, analytics."
+    "Skills: Renewals, upsell/cross-sell, onboarding, client lifecycle, dashboarding, coaching, escalation, Salesforce, HubSpot, Zoho, WhatsApp API, Excel, analytics. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
 
 PROJECTS = (
-    "Projects: Agent Vish bot, CS upgrades (6.5M/yr), dashboards, agentic tools."
+    "Projects: Agent Vish bot, CS upgrades (6.5M/yr), dashboards, agentic tools. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
 
 FEATURES = (
-    "Features: FAQ, analytics, project tracking, workflows."
+    "Features: FAQ, analytics, project tracking, workflows. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
 
 HELP = (
-    "Try: about vishal, skills, projects, or features."
+    "Try: about vishal, skills, projects, or features. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
 
 FALLBACK = (
-    "Try: about vishal, skills, projects, or features."
+    "Try: about vishal, skills, projects, or features. You can connect with Vishal on LinkedIn (linkedin.com/in/vishalanand797) or drop him an email at vishalanand.work@gmail.com."
 )
 
 DEBUG_SUMMARY_PREFIX = "Debug: "
 
 # Response helpers to force single-line outputs everywhere
-
 def single_line(text: str) -> str:
     return clean_text(text)
 
@@ -75,7 +74,6 @@ INTENTS: Dict[str, Callable[[], str]] = {
     "fallback": lambda: single_line(FALLBACK),
 }
 
-
 def handle_intent(intent: str, debug: Any | None = None) -> str:
     key = (intent or "").strip().lower()
     fn = INTENTS.get(key, INTENTS["fallback"])  # default to fallback
@@ -87,7 +85,6 @@ def handle_intent(intent: str, debug: Any | None = None) -> str:
     return resp
 
 # Optional: expose analytics skill with single-line summaries
-
 def analyze_performance(data: Dict[str, Any]) -> str:
     try:
         result = analytics_skill(data)
