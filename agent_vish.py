@@ -64,31 +64,48 @@ def debug_summary(info: Any) -> str:
         s = s[:177] + "..."
     return f"{DEBUG_SUMMARY_PREFIX}{s}"
 
-# Router for intents -> single line responses
-INTENTS: Dict[str, Callable[[], str]] = {
-    "bio": lambda: single_line(BIO),
-    "skills": lambda: single_line(SKILLS),
-    "projects": lambda: single_line(PROJECTS),
-    "features": lambda: single_line(FEATURES),
-    "help": lambda: single_line(HELP),
-    "fallback": lambda: single_line(FALLBACK),
-}
+# Main Agent Class
+class AgentVish:
+    """Main agent class that handles intent routing and responses."""
+    
+    def __init__(self):
+        # Router for intents -> single line responses
+        self.intents: Dict[str, Callable[[], str]] = {
+            "bio": lambda: single_line(BIO),
+            "skills": lambda: single_line(SKILLS),
+            "projects": lambda: single_line(PROJECTS),
+            "features": lambda: single_line(FEATURES),
+            "help": lambda: single_line(HELP),
+            "fallback": lambda: single_line(FALLBACK),
+        }
+    
+    def handle_intent(self, intent: str, debug: Any | None = None) -> str:
+        """Handle intent routing and return appropriate response."""
+        key = (intent or "").strip().lower()
+        fn = self.intents.get(key, self.intents["fallback"])  # default to fallback
+        resp = fn()
+        if debug is not None:
+            # Append concise debug summary separated by ' | '
+            dbg = debug_summary(debug)
+            return single_line(f"{resp} | {dbg}")
+        return resp
+    
+    def analyze_performance(self, data: Dict[str, Any]) -> str:
+        """Analyze performance data using analytics skill."""
+        try:
+            result = analytics_skill(data)
+            return debug_summary(result)
+        except Exception as e:
+            logger.exception("analytics failed")
+            return debug_summary({"error": str(e)})
 
+# Backwards compatibility: keep module-level function
 def handle_intent(intent: str, debug: Any | None = None) -> str:
-    key = (intent or "").strip().lower()
-    fn = INTENTS.get(key, INTENTS["fallback"])  # default to fallback
-    resp = fn()
-    if debug is not None:
-        # Append concise debug summary separated by ' | '
-        dbg = debug_summary(debug)
-        return single_line(f"{resp} | {dbg}")
-    return resp
+    """Module-level function for backwards compatibility."""
+    agent = AgentVish()
+    return agent.handle_intent(intent, debug)
 
-# Optional: expose analytics skill with single-line summaries
 def analyze_performance(data: Dict[str, Any]) -> str:
-    try:
-        result = analytics_skill(data)
-        return debug_summary(result)
-    except Exception as e:
-        logger.exception("analytics failed")
-        return debug_summary({"error": str(e)})
+    """Module-level function for backwards compatibility."""
+    agent = AgentVish()
+    return agent.analyze_performance(data)
