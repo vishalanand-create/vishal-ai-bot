@@ -20,6 +20,8 @@ class AgenticAIBot:
         self.add_skill(about_me_skill)
         self.add_skill(insight_skill)
         self.add_skill(report_skill)
+        self.add_skill(knowledge_skill)
+        self.add_skill(upsell_skill)
         
         # Wrap analytics_skill to match (message, memory) signature
         self.add_skill(lambda msg, mem: analytics_skill(msg))
@@ -59,24 +61,22 @@ def greet_skill(message, memory):
 def faq_skill(message, memory):
     msg_lower = message.lower()
     
-    if 'how are you' in msg_lower or 'how r u' in msg_lower:
-        return "I'm functioning well, thank you! How can I help you?"
-    
-    if 'thank' in msg_lower:
-        return "You're welcome! Let me know if you need anything else."
+    if 'help' in msg_lower or 'faq' in msg_lower or 'question' in msg_lower:
+        return "Here are some things I can help with: greetings, analytics, reports, and general questions!"
 
 def about_me_skill(message, memory):
     msg_lower = message.lower()
     
     phrases = [
         'who are you',
-        'what is your name',
-        'your name',
+        'what are you',
+        'tell me about you',
         'about you',
         'introduce yourself',
         'name please',
         'who r u'
     ]
+    
     if any(phrase in msg_lower for phrase in phrases):
         return "I am Agent Vish, your AI assistant."
     
@@ -119,6 +119,53 @@ def insight_skill(message, memory):
             "❓ Answer FAQs\n"
             "💬 Have natural conversations\n"
             "Feel free to ask me anything!"
+        )
+
+def knowledge_skill(message, memory):
+    msg_lower = message.lower()
+    
+    knowledge_phrases = [
+        'what all you know',
+        'what do you know',
+        'knowledge',
+        'your expertise',
+        'what is your knowledge',
+        'tell me what you know',
+        'your knowledge base'
+    ]
+    
+    if any(phrase in msg_lower for phrase in knowledge_phrases):
+        return (
+            "I have expertise in:\n"
+            "🤖 Conversational AI and natural language understanding\n"
+            "📈 Analytics and data insights\n"
+            "📊 Report generation and summarization\n"
+            "💼 Business automation and workflow assistance\n"
+            "🔍 Information retrieval and FAQ handling\n"
+            "I'm continuously learning to serve you better!"
+        )
+
+def upsell_skill(message, memory):
+    msg_lower = message.lower()
+    
+    upsell_phrases = [
+        'how do you upsell',
+        'upsell',
+        'upselling',
+        'cross-sell',
+        'upgrade',
+        'premium features'
+    ]
+    
+    if any(phrase in msg_lower for phrase in upsell_phrases):
+        return (
+            "Great question! Here's how I can help with upselling:\n"
+            "💎 Identify customer needs and recommend premium features\n"
+            "📊 Analyze usage patterns to suggest relevant upgrades\n"
+            "🎯 Personalize upgrade recommendations based on user behavior\n"
+            "📈 Highlight value propositions and ROI of premium tiers\n"
+            "💬 Engage customers with targeted messaging at the right time\n"
+            "Let me know if you'd like to explore specific upselling strategies!"
         )
 
 def report_skill(message, memory):
