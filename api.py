@@ -7,29 +7,22 @@ from datetime import datetime
 import json
 import re
 from werkzeug.exceptions import BadRequest
-
 # Add the current directory to Python path to import agent_vish
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
 # Import AgentVish (not AgenticAIBot) - no fallback mock
 from agent_vish import AgentVish
-
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
-
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 # Initialize Agent Vish - no fallback, must use real agent
 agent_vish = AgentVish()
 logger.info("Agent Vish initialized successfully")
-
 # Updated control chars pattern: includes DEL and C0/C1, but preserves normal whitespace
 CONTROL_CHARS_PATTERN = re.compile(r"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]")
 WHITESPACE_NORMALIZE_PATTERN = re.compile(r"[\t\r\n\v\f]+")
-
 def strip_control_chars(s: str) -> str:
     """Remove control characters and normalize whitespace robustly."""
     if not isinstance(s, str):
@@ -40,11 +33,9 @@ def strip_control_chars(s: str) -> str:
     s = WHITESPACE_NORMALIZE_PATTERN.sub(" ", s)
     # Trim leading/trailing spaces
     return s.strip()
-
 @app.route("/", methods=["GET"])
 def health():
     return "OK", 200
-
 @app.route("/chat", methods=["POST"])
 def chat():
     try:
@@ -85,7 +76,7 @@ def chat():
         # Always call the real AgentVish - no fallback
         reply = agent_vish.receive_message(msg)
         
-        resp = {"ok": True, "message": reply, "timestamp": datetime.utcnow().isoformat() + "Z"}
+        resp = {"ok": True, "reply": reply, "timestamp": datetime.utcnow().isoformat() + "Z"}
         logger.info("Response generated: %s", (reply[:200] + ("..." if len(reply) > 200 else "")))
         
         return jsonify(resp), 200
@@ -96,6 +87,5 @@ def chat():
             "error": "Server error",
             "message": "An unexpected error occurred. Please try again later."
         }), 500
-
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
