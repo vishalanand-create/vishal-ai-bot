@@ -1,5 +1,6 @@
 # agent_vish.py
 import logging
+import re
 from skills.analytics_skill import analytics_skill
 
 # Configure logging
@@ -59,6 +60,27 @@ def greet_skill(message, memory):
 
 def faq_skill(message, memory):
     msg_lower = message.lower()
+    
+    # Robust matching for 'how are you' and common variants
+    # Remove punctuation and normalize spaces
+    normalized_msg = re.sub(r'[^a-z0-9\s]', '', msg_lower).strip()
+    normalized_msg = re.sub(r'\s+', ' ', normalized_msg)  # Normalize multiple spaces
+    
+    # Check for 'how are you' variants
+    how_are_you_patterns = [
+        r'\bhow\s+(are|r)\s+(you|u|ya)\b',
+        r'\bhow\s+r\s+u\b',
+        r'\bhows\s+(you|u|ya)\b',
+        r'\bhow\s+are\s+ya\b',
+        r'\bhowareyou\b',
+        r'\bhowru\b',
+        r'\bhow\s+do\s+you\s+do\b'
+    ]
+    
+    if any(re.search(pattern, normalized_msg) for pattern in how_are_you_patterns):
+        return "I'm doing well, thanks for asking! How can I help you today?"
+    
+    # Existing FAQ patterns
     if 'what can you do' in msg_lower or 'capabilities' in msg_lower:
         return "I can help you with analytics, reports, insights, and answer questions about my creator, Vishal Anand!"
 
