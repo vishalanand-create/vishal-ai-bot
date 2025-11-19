@@ -3,6 +3,7 @@ import logging
 import re
 from typing import Callable, List, Dict, Any, Tuple
 from skills.analytics_skill import analytics_skill
+from skills.ai_router_skill import AIRouterSkill
 
 # Configure logging
 logging.basicConfig(
@@ -76,6 +77,14 @@ class AgentVish:
             "features": lambda: single_line(FEATURES),
             "help": lambda: single_line(HELP),
             "fallback": lambda: single_line(FALLBACK),
+
+                    # Initialize AI Router for intelligent model selection
+                    try:
+                        self.ai_router = AIRouterSkill({})
+                                    logger.info("AI Router initialized successfully")
+                                except Exception as e:
+                                                logger.warning(f"AI Router not available: {e}")
+                                                self.ai_router = None
         }
     
     def receive_message(self, msg: str) -> str:
@@ -122,6 +131,17 @@ class AgentVish:
             intent = "help"
         else:
             intent = "fallback"
+
+                # Try AI Router for intelligent response
+                if self.ai_router:
+                                try:
+                                                    context = {"message": msg, "normalized_message": msg_lower}
+                                                    ai_response = self.ai_router.generate_response(msg, context)
+                                                    if ai_response:
+                                                                            return single_line(ai_response)
+                                                                    except Exception as e:
+                                                                                        logger.error(f"AI Router error: {e}")
+                                                                                        # Fall through to default fallback
         
         reply = self.handle_intent(intent)
         
