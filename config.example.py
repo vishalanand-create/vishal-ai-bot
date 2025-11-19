@@ -6,6 +6,11 @@ API_KEY = "your_api_key_here"
 API_SECRET = "your_api_secret_here"
 BOT_TOKEN = "your_bot_token_here"
 
+# AI Model API Keys
+OPENAI_API_KEY = "your_openai_api_key_here"  # ChatGPT Pro
+GOOGLE_API_KEY = "your_google_api_key_here"  # Gemini Pro
+PERPLEXITY_API_KEY = "your_perplexity_api_key_here"  # Perplexity Pro
+
 # Bot Configuration
 BOT_NAME = "Agent Vish"
 BOT_PREFIX = "!"
