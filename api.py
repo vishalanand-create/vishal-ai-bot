@@ -15,7 +15,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from agent_vish import AgentVish
 
 # Initialize Flask app
-app = Flask(__name__)
+app = Flask(__name__, static_folder='public', static_url_path='')
 CORS(app)  # Enable CORS for all routes
 
 # Configure logging
@@ -43,8 +43,7 @@ def strip_control_chars(s: str) -> str:
 
 @app.route("/", methods=["GET"])
 def health():
-    return "OK", 200
-
+    return app.send_static_file('chat.html')
 @app.route("/chat", methods=["POST"])
 def chat():
     try:
