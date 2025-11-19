@@ -121,6 +121,7 @@ class AgentVish:
             "features": lambda: single_line(FEATURES),
             "help": lambda: single_line(HELP),
             "fallback": lambda: single_line(FALLBACK),
+                    }
 
                     # Initialize AI Router for intelligent model selection
                     try:
