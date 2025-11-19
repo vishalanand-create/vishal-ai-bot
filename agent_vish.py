@@ -3,7 +3,8 @@ import logging
 import re
 from typing import Callable, List, Dict, Any, Tuple
 from skills.analytics_skill import analytics_skill
-from skills.ai_router_skill import AIRouterSkill
+import requests
+from typing import Optional
 
 # Configure logging
 logging.basicConfig(
@@ -65,6 +66,49 @@ def debug_summary(info: Any) -> str:
         s = s[:177] + "..."
     return f"{DEBUG_SUMMARY_PREFIX}{s}"
 
+class LocalLLMRouter:
+    """Simple local LLM router using Ollama - no API tokens required"""
+    
+    def __init__(self, base_url: str = "http://localhost:11434"):
+        self.base_url = base_url
+        self.default_model = "llama3.2:1b"  # Fast, lightweight model
+        self.available = self._check_availability()
+    
+    def _check_availability(self) -> bool:
+        """Check if Ollama is running"""
+        try:
+            response = requests.get(f"{self.base_url}/api/tags", timeout=2)
+            return response.status_code == 200
+        except:
+            return False
+    
+    def route(self, query: str, context: dict = None) -> Optional[str]:
+        """Route query to local LLM"""
+        if not self.available:
+            return None
+        
+        try:
+            payload = {
+                "model": self.default_model,
+                "prompt": query,
+                "stream": False
+            }
+            
+            response = requests.post(
+                f"{self.base_url}/api/generate",
+                json=payload,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                return response.json().get("response", "")
+            return None
+            
+        except Exception as e:
+            logger.warning(f"Local LLM routing failed: {e}")
+            return None
+
+
 class AgentVish:
     """Main agent class for Vishal's bot."""
     
@@ -80,10 +124,14 @@ class AgentVish:
 
                     # Initialize AI Router for intelligent model selection
                     try:
-                        self.ai_router = AIRouterSkill({})
-                                    logger.info("AI Router initialized successfully")
+                        self.ai_router = LocalLLMRouter()
+                                    if self.ai_router.available:
+                                                        logger.info("Local LLM Router initialized successfully")
+                                                    else:
+                logger.warning("Ollama not available - install: curl -fsSL https://ollama.com/install.sh | sh")
+                self.ai_router = None
                                 except Exception as e:
-                                                logger.warning(f"AI Router not available: {e}")
+                                                logger.warning(f"Local LLM Router not available: {e}")
                                                 self.ai_router = None
         }
     
